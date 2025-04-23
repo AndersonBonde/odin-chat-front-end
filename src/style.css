@@ -1,0 +1,274 @@
+:root {
+  --color-primary: #3B82F6;
+  --color-primary-light: #93C5FD;
+  --color-background: #F0F9FF;
+  --color-border: #BFDBFE;
+  --color-dark-text: #1E3A8A;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background-color: white;
+  width: 80%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 
+  --- Header
+*/
+
+.container header {
+  background-color: var(--color-primary);
+  min-height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+#userName {
+  position: relative;
+  font-weight: bold;
+}
+
+.login-button {
+  background-color: white;
+  color: var(--color-dark-text);
+  padding: .5rem 1rem;
+  border-radius: .5rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-button:hover {
+  outline: 1px solid var(--color-border);
+  background-color: var(--color-primary-light);
+}
+
+/* 
+  --- Main
+*/
+
+main {
+  width: 100%;
+  align-self: center;
+  flex-grow: 1;
+  max-height: calc(100vh - 80px - 1rem);
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+/* 
+  --- Chat
+*/
+
+#chat {
+  background-color: white;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  overflow: hidden;
+}
+
+#chat-window {
+  overflow-y: auto;
+}
+
+.message-card {
+  padding: 2px;
+  display: flex;
+}
+
+.message-author {
+  margin-right: 6px;
+  min-width: fit-content;
+}
+
+.message-author::after {
+  content: ':';
+}
+
+#chat-typing-box {
+  --box-radius: 0 1rem 1rem 0;
+  min-height: 60px;
+  display: flex;
+  gap: 1rem;
+  border-radius: var(--box-radius);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+#chat-textarea {
+  flex-grow: 1;
+  resize: none;
+  border: none;
+  padding: 6px;
+  font-size: 1rem;
+}
+
+#chat-textarea:focus {
+  outline: none;
+}
+
+#send-message-button {
+  background-color: var(--color-primary-light);
+  flex-basis: 80px;
+  border: none;
+  font-size: 1.5rem;
+  border-radius: var(--box-radius);
+  color: var(--color-dark-text);
+}
+
+#send-message-button:hover {
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+/* 
+  --- Aside
+*/
+
+aside {
+  width: 240px;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+#follow-list,
+#online-list {
+  flex-grow: 1;
+  padding: 1rem;
+  background-color: var(--color-primary-light);
+  color: var(--color-dark-text);
+  text-align: center;
+}
+
+#follow-list {
+  border-radius: 16px 16px 0 0;
+}
+
+#online-list {
+  border-radius: 0 0 16px 16px;
+}
+
+/* 
+  --- Login page and register page
+*/
+
+.login-container,
+.register-container {
+  width: 600px;
+  border-radius: 12px;
+  height: fit-content;
+  overflow: hidden;
+}
+
+.login-container header,
+.register-container header {
+  background-color: var(--color-primary);
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-dark-text);
+}
+
+#login-form,
+#register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 6px;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+
+.form-item input {
+  padding: 4px;
+}
+
+.bottom-button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.back-button {
+  background-color: var(--color-background);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-dark-text);
+  font-weight: bold;
+}
+
+.back-button:hover {
+  cursor: pointer;
+  background-color: var(--color-primary-light);
+  outline: 1px solid var(--color-border);
+}
+
+button[type='submit'] {
+  background-color: var(--color-primary);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-dark-text);
+  font-weight: bold;
+}
+
+button[type='submit']:hover {
+  cursor: pointer;
+  background-color: var(--color-primary-light);
+  outline: 1px solid var(--color-border);
+}
+
+/* 
+  --- Utilities
+*/
+
+#spinner {
+  width: 20px;
+  height: 20px;
+  margin-left: 1rem;
+  margin-top: 8px;
+  border: 2px solid #ccc;
+  border-top: 3px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  display: inline;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}

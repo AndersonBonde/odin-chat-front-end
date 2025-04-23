@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+</head>
+<body>
+  <div class="login-container">
+    <header>
+      <h1>Login</h1>
+    </header>
+    <main>
+      <form id="login-form">
+        <div class="form-item">
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" required>
+        </div>
+        <div class="form-item">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" required>
+        </div>
+        <p class="errors"></p>
+        <p>
+          If you don't have an account you can 
+          <a href="./register.html">create one here</a>.
+        </p>
+        <div class="bottom-button-container">
+          <button class="back-button" onclick="location.href='./index.html'"><< Back</button>
+          <button type="submit">Login</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

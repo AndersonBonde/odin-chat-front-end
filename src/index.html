@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <p id="userName">Welcome (connecting) <span id="spinner"></span></p>
+      <a href="./login.html" class="login-button">Login</a>
+    </header>
+    <main>
+      <div id="chat">
+        <div id="chat-window">
+          <div class="message-card">
+            <p class="message-author">Author 01</p>
+            <p class="message-text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Modi maxime fugiat esse?</p>
+          </div>
+        </div>
+        <form id="chat-typing-box">
+          <textarea name="chat-textarea" id="chat-textarea" placeholder="Leave a message"></textarea>
+          <button type="submit" id="send-message-button" aria-label="Send message">➤</button>
+        </form>
+      </div>
+      <aside>
+        <div id="follow-list">
+          <h3>You follow</h3>
+        </div>
+        <div id="online-list">
+          <h3>Online</h3>
+        </div>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>
