@@ -27,11 +27,11 @@ function showUsername(name) {
 }
 
 (async function loadUsernameOnConnection() {
-  if (token === null) {
+  if (!token) {
     guestName = await getGuestName();
     showUsername(guestName);
   } else {
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user'));
 
     showUsername(user.email);
   }
