@@ -101,15 +101,11 @@ main {
 .message-card {
   padding: 2px;
   display: flex;
+  flex-direction: column;
 }
 
 .message-author {
-  margin-right: 6px;
-  min-width: fit-content;
-}
-
-.message-author::after {
-  content: ':';
+  font-weight: bold;
 }
 
 #chat-typing-box {
