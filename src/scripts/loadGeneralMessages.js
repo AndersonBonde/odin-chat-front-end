@@ -1,21 +1,38 @@
 const chatWindow = document.getElementById('chat-window');
 
+let lastMessageAuthor = undefined;
+
 function createChatMessage(author, message) {
-  const wrapper = document.createElement('div');
-  const messageAuthor = document.createElement('p');
   const messageText = document.createElement('p');
+  let wrapper;
 
-  wrapper.classList.add('message-card');
-  messageAuthor.classList.add('message-author');
   messageText.classList.add('message-text');
-
-  messageAuthor.innerText = author;
   messageText.innerText = message;
 
-  wrapper.appendChild(messageAuthor);
-  wrapper.appendChild(messageText);
+  /*
+  * Will add follow up messages from the same user
+  * under the same message-card
+  */
+  if (author == lastMessageAuthor) {
+    wrapper = document.querySelector('#chat-window').lastChild;
 
-  chatWindow.appendChild(wrapper);
+    wrapper.appendChild(messageText);
+  } else {
+    const messageAuthor = document.createElement('p');
+    wrapper = document.createElement('div');
+  
+    wrapper.classList.add('message-card');
+    messageAuthor.classList.add('message-author');
+  
+    messageAuthor.innerText = author;
+  
+    wrapper.appendChild(messageAuthor);
+    wrapper.appendChild(messageText);
+  
+    chatWindow.appendChild(wrapper);
+  }
+
+  lastMessageAuthor = author;
 
   return wrapper;
 }
