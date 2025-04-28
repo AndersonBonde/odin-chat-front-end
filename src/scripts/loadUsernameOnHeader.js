@@ -30,8 +30,10 @@ function showUsername(name) {
   if (!token) {
     guestName = await getGuestName();
     showUsername(guestName);
+    localStorage.setItem('guest', guestName);
   } else {
     const user = JSON.parse(localStorage.getItem('user'));
+    localStorage.removeItem('guest');
 
     showUsername(user.email);
   }
