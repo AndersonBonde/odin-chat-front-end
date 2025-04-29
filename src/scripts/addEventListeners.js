@@ -12,7 +12,7 @@ chatForm.addEventListener('submit', async (e) => {
   const guestName = localStorage.getItem('guest') || null;
 
   try {
-    const res = await fetch('http://localhost:3000/messages/1', {
+    const res = await fetch('http://localhost:3000/messages/chat-rooms/1', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, text, guestName }),
