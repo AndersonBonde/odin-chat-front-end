@@ -1,8 +1,8 @@
 const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = undefined;
+let oldMessageContainer = undefined;
 
-// TODO Add edit button to messages
 // TODO Add delete button to messages
 
 function createChatMessage(author, message, messageId) {
@@ -18,7 +18,7 @@ function createChatMessage(author, message, messageId) {
     editMessageTextEventListener(e, messageText);
   });
 
-  // Will add follow up messages from the same user under the same message-card
+  // Will add follow up messages from the same user under the same message-card else create a new one
   if (author == lastMessageAuthor) {
     wrapper = document.querySelector('#chat-window').lastChild;
 
@@ -47,16 +47,27 @@ function scrollToBottom() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function removeEditForm(editForm) {
+  oldMessageContainer.style.display = 'block';
+  oldMessageContainer = undefined;
+  editForm.parentElement.removeChild(editForm);
+}
+
 // Event listener to allow users to edit their messages
 function editMessageTextEventListener(e, container) {
   e.preventDefault();
 
   const user = JSON.parse(localStorage.getItem('user'));
+  const existingEditForm = document.getElementById('edit-form');
   const author = container.dataset.author;
   const id = container.dataset.id;
   const oldText = container.innerText;
 
   if (!user || author != user.email) return;
+
+  if (existingEditForm) {
+    removeEditForm(existingEditForm, container);
+  }
 
   // Create form
   const editForm = document.createElement('form');
@@ -71,21 +82,32 @@ function editMessageTextEventListener(e, container) {
   editSubmitButton.setAttribute('type', 'submit');
   editSubmitButton.id = 'edit-submit-button';
   editSubmitButton.textContent = '➤';
-  editSubmitButton.addEventListener('click', (e) =>  EditSubmitButtonEventListener(e, id, editTextarea.value));
-
+  
+  editForm.addEventListener('submit', (e) =>  EditSubmitButtonEventListener(e, id, editTextarea.value));
   editForm.appendChild(editTextarea);
   editForm.appendChild(editSubmitButton);
 
-  // Find index of container inside the parentElement
-  const index = Array.from(container.parentElement.children).indexOf(container);
-  
-  // Hide container and display the editForm in the same index
+  // Hide container and display the editForm
   container.style.display = 'none';
-  container.parentElement.insertBefore(editForm, container.parentElement.childNodes[index + 1]);
+  oldMessageContainer = container;
+  container.insertAdjacentElement('afterend', editForm);
 
   // Moves the cursor to the end of the text after focus
   editTextarea.focus();
   editTextarea.setSelectionRange(editTextarea.value.length, editTextarea.value.length);
+
+  // Cancel edit from pressing esc
+  editForm.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape')
+      removeEditForm(editForm);
+  });
+}
+
+function updateOldMessage(newText) {
+  const editForm = document.getElementById('edit-form');
+
+  oldMessageContainer.innerText = newText;
+  removeEditForm(editForm);
 }
 
 async function EditSubmitButtonEventListener(e, id, text) {
@@ -101,11 +123,17 @@ async function EditSubmitButtonEventListener(e, id, text) {
       body: JSON.stringify({ text }),
     });
     
-    window.location.href = './index.html';
+    updateOldMessage(text);
 
   } catch (err) {
     console.error('Failed to PATCH message');
   }
+}
+
+function focusChatTextInputOnLoad() {
+  const chat = document.getElementById('chat-textarea');
+
+  chat.focus();
 }
 
 (async function loadGeneralChat() {
@@ -124,6 +152,7 @@ async function EditSubmitButtonEventListener(e, id, text) {
     }
 
     scrollToBottom();
+    focusChatTextInputOnLoad();
 
   } catch (err) {
     console.error('Failed to load general messages', err);

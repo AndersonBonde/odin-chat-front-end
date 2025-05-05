@@ -124,7 +124,7 @@ main {
   gap: 1rem;
   border-radius: var(--box-radius);
   overflow: hidden;
-  margin-top: 1rem;
+  margin-block: 1rem;
 }
 
 #chat-textarea {
@@ -185,6 +185,7 @@ aside {
   display: flex;
   flex-direction: column;
   gap: .5rem;
+  margin-bottom: 1rem;
 }
 
 #follow-list,
