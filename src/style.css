@@ -258,6 +258,7 @@ aside {
   border-radius: 8px;
   color: var(--color-dark-text);
   font-weight: bold;
+  margin-top: 1rem;
 }
 
 .back-button:hover {
