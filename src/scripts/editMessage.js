@@ -1,19 +1,22 @@
 let oldMessageContainer = undefined;
 
-function removeEditForm(editForm) {
+function removeEditForm() {
+  const editForm = document.getElementById('edit-form');
+
   if (oldMessageContainer) {
     oldMessageContainer.style.display = 'block';
     oldMessageContainer = undefined;
   }
 
-  editForm.parentElement.removeChild(editForm);
+  if (editForm)
+    editForm.parentElement.removeChild(editForm);
 }
 
 function updateOldMessage(newText) {
   const editForm = document.getElementById('edit-form');
 
   oldMessageContainer.innerText = newText;
-  removeEditForm(editForm);
+  removeEditForm();
 }
 
 // Event listener to allow users to edit their messages
@@ -29,7 +32,7 @@ function editMessageTextEventListener(e, container) {
   if (!user || author != user.email) return;
 
   if (existingEditForm) {
-    removeEditForm(existingEditForm);
+    removeEditForm();
   }
 
   // Create form
@@ -46,7 +49,7 @@ function editMessageTextEventListener(e, container) {
   const editSubmitButton = document.createElement(`button`);
   editSubmitButton.setAttribute('type', 'submit');
   editSubmitButton.id = 'edit-submit-button';
-  editSubmitButton.textContent = '➤';
+  editSubmitButton.textContent = 'Edit';
   
   editForm.addEventListener('submit', (e) =>  SubmitEventListener(e, id, editTextarea.value));
   editForm.appendChild(editTextarea);
@@ -64,7 +67,7 @@ function editMessageTextEventListener(e, container) {
   // Cancel edit from pressing esc
   editForm.addEventListener('keydown', (e) => {
     if (e.key === 'Escape')
-      removeEditForm(editForm);
+      removeEditForm();
   });
 }
 
@@ -90,4 +93,5 @@ async function SubmitEventListener(e, id, text) {
 
 module.exports = {
   editMessageTextEventListener,
+  removeEditForm,
 }

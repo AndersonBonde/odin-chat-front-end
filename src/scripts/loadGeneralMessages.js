@@ -1,4 +1,4 @@
-const { editMessageTextEventListener } = require('./editMessage');
+const { editMessageTextEventListener, removeEditForm } = require('./editMessage');
 
 const chatWindow = document.getElementById('chat-window');
 
@@ -48,14 +48,13 @@ function scrollToBottom() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-function focusChatTextOnLoad() {
-  const chat = document.getElementById('chat-textarea');
-
-  chat.focus();
-}
-
 (async function loadGeneralChat() {
   try {
+    const chat = document.getElementById('chat-textarea');
+
+    chat.focus();
+    chat.addEventListener('focus', removeEditForm);
+
     const res = await fetch('http://localhost:3000/messages/chat-rooms/general');
     if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
 
@@ -70,7 +69,6 @@ function focusChatTextOnLoad() {
     }
 
     scrollToBottom();
-    focusChatTextOnLoad();
 
   } catch (err) {
     console.error('Failed to load general messages', err);
