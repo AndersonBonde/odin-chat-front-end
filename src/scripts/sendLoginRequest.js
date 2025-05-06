@@ -18,7 +18,11 @@ loginForm.addEventListener('submit', async (e) => {
     if (!res.ok) {
       const errorsP = document.querySelector('.errors');
       if (errorsP) {
-        errorsP.textContent = data.message;
+        errorsP.innerHTML = '';
+
+        const text = document.createTextNode(data.message);
+        errorsP.appendChild(text);
+
         errorsP.style.color = 'tomato';
       }
       

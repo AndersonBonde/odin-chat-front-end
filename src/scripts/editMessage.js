@@ -13,10 +13,7 @@ function removeEditForm() {
 }
 
 function updateOldMessage(newText) {
-  const editForm = document.getElementById('edit-form');
-
   oldMessageContainer.innerText = newText;
-  removeEditForm();
 }
 
 // Event listener to allow users to edit their messages
@@ -75,16 +72,19 @@ async function SubmitEventListener(e, id, text) {
   e.preventDefault();
 
   try {
+    const token = localStorage.getItem('token');
+
     await fetch(`http://localhost:3000/messages/${id}`, {
       method: 'PATCH',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': `${localStorage.getItem('token')}`,
+        'Authorization': token,
       },
       body: JSON.stringify({ text }),
     });
     
     updateOldMessage(text);
+    removeEditForm();
 
   } catch (err) {
     console.error('Failed to PATCH message');

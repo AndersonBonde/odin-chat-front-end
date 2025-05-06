@@ -4,6 +4,7 @@ const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = undefined;
 
+// TODO Display box on click to choose between edit or delete
 // TODO Add delete button to messages
 
 function createChatMessage(author, message, messageId) {
