@@ -109,6 +109,7 @@ main {
 }
 
 .message-text {
+  position: relative;
   padding-block: 1px;
 }
 
@@ -303,4 +304,21 @@ button[type='submit']:hover {
 @keyframes spin {
   0% { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.options-card {
+  position: absolute;
+  top: -36px;
+  right: 0;
+  background-color: lightgray;
+  width: fit-content;
+  display: flex;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.edit-button,
+.delete-button {
+  padding: 2px 6px;
 }

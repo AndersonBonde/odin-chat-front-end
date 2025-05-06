@@ -1,5 +1,7 @@
 const { editMessageTextEventListener, removeEditForm } = require('./editMessage');
+const { createOptionsBox } = require('./displayOptionsPopup');
 
+const user = JSON.parse(localStorage.getItem('user'));
 const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = undefined;
@@ -16,9 +18,16 @@ function createChatMessage(author, message, messageId) {
   messageText.setAttribute('data-id', messageId);
   messageText.setAttribute('data-author', author);
 
-  messageText.addEventListener('click', (e) => {
-    editMessageTextEventListener(e, messageText);
-  });
+  if (user && user.email == author) {
+    messageText.addEventListener('click', (e) => {
+      const optionsBox = createOptionsBox(messageId);
+      messageText.appendChild(optionsBox);
+    });
+  }
+
+  // messageText.addEventListener('click', (e) => {
+  //   editMessageTextEventListener(e, messageText);
+  // });
 
   // Will add follow up messages from the same user under the same message-card else create a new one
   if (author == lastMessageAuthor) {
