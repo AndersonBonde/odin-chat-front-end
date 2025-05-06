@@ -19,11 +19,22 @@ function createOptionsBox(messageId) {
       deleteOptionsBox();
     }
   }
-
   document.addEventListener('keydown', handleEscape);
 
   activeBox = container;
   activeEscapeHandler = handleEscape;
+  
+  // Dismiss optionsBox on outside click
+  function handleClickOutside(e) {
+    if (
+      activeBox &&
+      !activeBox.parentElement.contains(e.target)
+    ) {
+      deleteOptionsBox();
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }
+  document.addEventListener('click', handleClickOutside);
   
   return container;
 }

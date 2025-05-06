@@ -1,4 +1,3 @@
-const { removeEditForm } = require('./editMessage');
 const { createOptionsBox } = require('./displayOptionsPopup');
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -56,7 +55,6 @@ function scrollToBottom() {
     const chat = document.getElementById('chat-textarea');
 
     chat.focus();
-    chat.addEventListener('focus', removeEditForm);
 
     const res = await fetch('http://localhost:3000/messages/chat-rooms/general');
     if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);

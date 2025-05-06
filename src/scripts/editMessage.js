@@ -1,19 +1,20 @@
-let oldMessageContainer = undefined;
+let activeEditForm = null;
+let activeMessageContainer = null;
 
 function removeEditForm() {
-  const editForm = document.getElementById('edit-form');
-
-  if (oldMessageContainer) {
-    oldMessageContainer.style.display = 'block';
-    oldMessageContainer = undefined;
+  if (activeMessageContainer) {
+    activeMessageContainer.style.display = 'block';
+    activeMessageContainer = null;
   }
 
-  if (editForm)
-    editForm.parentElement.removeChild(editForm);
+  if (activeEditForm) {
+    activeEditForm.remove();
+    activeEditForm = null;
+  }
 }
 
 function updateOldMessage(newText) {
-  oldMessageContainer.innerText = newText;
+  activeMessageContainer.innerText = newText;
 }
 
 // Event listener to allow users to edit their messages
@@ -21,14 +22,13 @@ function editMessageTextEventListener(e, container) {
   e.preventDefault();
 
   const user = JSON.parse(localStorage.getItem('user'));
-  const existingEditForm = document.getElementById('edit-form');
   const author = container.dataset.author;
   const id = container.dataset.id;
   const oldText = container.innerText;
 
   if (!user || author != user.email) return;
 
-  if (existingEditForm) {
+  if (activeEditForm) {
     removeEditForm();
   }
 
@@ -36,6 +36,7 @@ function editMessageTextEventListener(e, container) {
   const editForm = document.createElement('form');
   editForm.id = 'edit-form';
   editForm.setAttribute('autocomplete', 'off');
+  activeEditForm = editForm;
 
   const editTextarea = document.createElement('input');
   editTextarea.setAttribute('type', 'text');
@@ -54,8 +55,8 @@ function editMessageTextEventListener(e, container) {
 
   // Hide old container and display the editForm
   container.style.display = 'none';
-  oldMessageContainer = container;
   container.insertAdjacentElement('afterend', editForm);
+  activeMessageContainer = container;
 
   // Moves the cursor to the end of the text after focus
   editTextarea.focus();
@@ -66,6 +67,19 @@ function editMessageTextEventListener(e, container) {
     if (e.key === 'Escape')
       removeEditForm();
   });
+
+  // Dismiss editForm on outside click
+  function handleClickOutside(e) {
+    if (
+      activeEditForm &&
+      !activeEditForm.contains(e.target)
+    ) {
+      removeEditForm();
+      document.removeEventListener('click', handleClickOutside);
+    }
+  }
+
+  document.addEventListener('click', handleClickOutside);
 }
 
 async function SubmitEventListener(e, id, text) {
