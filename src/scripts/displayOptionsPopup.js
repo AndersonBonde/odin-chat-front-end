@@ -1,3 +1,5 @@
+const { editMessageTextEventListener } = require('./editMessage');
+
 let activeBox = null;
 let activeEscapeHandler = null;
 
@@ -37,8 +39,11 @@ function createEditButton(messageId) {
     e.preventDefault();
     e.stopPropagation();
 
+    const nodes = document.querySelectorAll('.message-text');
+    const messageContainer = Array.from(nodes).find((node) => node.getAttribute('data-id') == messageId);
+
     deleteOptionsBox();
-    console.log(`Message id to be edited: ${messageId}`);
+    editMessageTextEventListener(e, messageContainer);
   }
 
   button.addEventListener('click', editButtonListener);

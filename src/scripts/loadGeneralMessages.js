@@ -1,13 +1,10 @@
-const { editMessageTextEventListener, removeEditForm } = require('./editMessage');
+const { removeEditForm } = require('./editMessage');
 const { createOptionsBox } = require('./displayOptionsPopup');
 
 const user = JSON.parse(localStorage.getItem('user'));
 const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = undefined;
-
-// TODO Display box on click to choose between edit or delete
-// TODO Add delete button to messages
 
 function createChatMessage(author, message, messageId) {
   const messageText = document.createElement('p');
@@ -24,10 +21,6 @@ function createChatMessage(author, message, messageId) {
       messageText.appendChild(optionsBox);
     });
   }
-
-  // messageText.addEventListener('click', (e) => {
-  //   editMessageTextEventListener(e, messageText);
-  // });
 
   // Will add follow up messages from the same user under the same message-card else create a new one
   if (author == lastMessageAuthor) {
