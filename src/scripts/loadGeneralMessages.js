@@ -3,7 +3,7 @@ const { createOptionsBox } = require('./displayOptionsPopup');
 const user = JSON.parse(localStorage.getItem('user'));
 const chatWindow = document.getElementById('chat-window');
 
-let lastMessageAuthor = undefined;
+let lastMessageAuthor = null;
 
 function createChatMessage(author, message, messageId) {
   const messageText = document.createElement('p');
@@ -14,6 +14,7 @@ function createChatMessage(author, message, messageId) {
   messageText.setAttribute('data-id', messageId);
   messageText.setAttribute('data-author', author);
 
+  // Render options box if own message is clicked for edit and delete
   if (user && user.email == author) {
     messageText.addEventListener('click', (e) => {
       const optionsBox = createOptionsBox(messageId);
@@ -23,7 +24,7 @@ function createChatMessage(author, message, messageId) {
 
   // Will add follow up messages from the same user under the same message-card else create a new one
   if (author == lastMessageAuthor) {
-    wrapper = document.querySelector('#chat-window').lastChild;
+    wrapper = chatWindow.lastChild;
 
     wrapper.appendChild(messageText);
   } else {
@@ -51,11 +52,11 @@ function scrollToBottom() {
 }
 
 (async function loadGeneralChat() {
+  // Focus chatBox on first load
+  const chat = document.getElementById('chat-textarea');
+  chat.focus();
+
   try {
-    const chat = document.getElementById('chat-textarea');
-
-    chat.focus();
-
     const res = await fetch('http://localhost:3000/messages/chat-rooms/general');
     if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
 

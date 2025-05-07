@@ -21,12 +21,8 @@ function updateOldMessage(newText) {
 function editMessageTextEventListener(e, container) {
   e.preventDefault();
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  const author = container.dataset.author;
   const id = container.dataset.id;
   const oldText = container.innerText;
-
-  if (!user || author != user.email) return;
 
   if (activeEditForm) {
     removeEditForm();

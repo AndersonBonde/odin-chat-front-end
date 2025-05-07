@@ -1,4 +1,5 @@
 const { editMessageTextEventListener } = require('./editMessage');
+const { deleteMessageEventListener } = require('./deleteMessage');
 
 let activeBox = null;
 let activeEscapeHandler = null;
@@ -50,8 +51,7 @@ function createEditButton(messageId) {
     e.preventDefault();
     e.stopPropagation();
 
-    const nodes = document.querySelectorAll('.message-text');
-    const messageContainer = Array.from(nodes).find((node) => node.getAttribute('data-id') == messageId);
+    const messageContainer = document.querySelector(`.message-text[data-id="${messageId}"]`);
 
     deleteOptionsBox();
     editMessageTextEventListener(e, messageContainer);
@@ -74,7 +74,7 @@ function createDeleteButton(messageId) {
     e.stopPropagation();
 
     deleteOptionsBox();
-    console.log(`Message id to be deleted: ${messageId}`);
+    deleteMessageEventListener(e, messageId);
   }
 
   button.addEventListener('click', deleteButtonListener);
