@@ -72,9 +72,12 @@ chatForm.addEventListener('submit', async (e) => {
     if (!res.ok) throw new Error(`Failed to POST message, Status: ${res.status}`);
   
     const data = await res.json();
-    console.log(data.message, data.newMessage);
 
-    window.location.href = './index.html'; // PLACEHOLDER
+    const author = user ? user.email : guestName;
+    const messageId = data.newMessage.id;
+
+    createChatMessage(author, text, messageId);
+    scrollToBottom();
     
   } catch (err) {
     console.error('Failed to POST message', err);
