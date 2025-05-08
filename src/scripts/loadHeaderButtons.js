@@ -2,6 +2,8 @@ const token = localStorage.getItem('token');
 const loginButton = document.querySelector('.login-button');
 const logoutButton = document.getElementById('logout-button');
 
+// TODO Add user profile
+
 if (token) {
   loginButton.style.display = 'none';
   logoutButton.style.display = 'block';

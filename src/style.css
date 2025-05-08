@@ -195,11 +195,23 @@ aside {
   padding: 1rem;
   background-color: var(--color-primary-light);
   color: var(--color-dark-text);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#follow-list h3,
+#online-list h3 {
   text-align: center;
+  margin-bottom: 4px;
 }
 
 #follow-list {
   border-radius: 16px 16px 0 0;
+}
+
+.follow-card {
+
 }
 
 #online-list {
