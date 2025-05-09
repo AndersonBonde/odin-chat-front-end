@@ -4,7 +4,7 @@ async function fetchFollowingList() {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
 
-  if (!user) return;
+  if (!user || !token) return;
 
   try {
     const res = await fetch(`http://localhost:3000/users/following/${user.id}`, {
@@ -35,9 +35,8 @@ function createFollowCard(user) {
   return card;
 }
 
-
 (async function populateFollowingList() {
-  cleanFollowingList();
+  clearFollowingList();
 
   const title = document.createElement('h3');
   title.innerText = 'You follow';
@@ -53,6 +52,6 @@ function createFollowCard(user) {
   }
 })();
 
-function cleanFollowingList() {
+function clearFollowingList() {
   followListDiv.innerHTML = '';
 }

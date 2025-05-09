@@ -2,7 +2,21 @@ const { editMessageTextEventListener } = require('./editMessage');
 const { deleteMessageEventListener } = require('./deleteMessage');
 
 let activeBox = null;
-let activeEscapeHandler = null;
+
+function handleEscapeKey(e) {
+  if (e.key === 'Escape') {
+    deleteOptionsBox();
+  }
+}
+
+function handleClickOutside(e) {
+  if (
+    activeBox &&
+    !activeBox.parentElement.contains(e.target)
+  ) {
+    deleteOptionsBox();
+  }
+}
 
 function createOptionsBox(messageId) {
   deleteOptionsBox();
@@ -14,27 +28,10 @@ function createOptionsBox(messageId) {
   const deleteButton = createDeleteButton(messageId);
   container.append(editButton, deleteButton);
   
-  // Delete the container if the user presses escape
-  function handleEscape(e) {
-    if (e.key === 'Escape') {
-      deleteOptionsBox();
-    }
-  }
-  document.addEventListener('keydown', handleEscape);
-
   activeBox = container;
-  activeEscapeHandler = handleEscape;
   
-  // Dismiss optionsBox on outside click
-  function handleClickOutside(e) {
-    if (
-      activeBox &&
-      !activeBox.parentElement.contains(e.target)
-    ) {
-      deleteOptionsBox();
-      document.removeEventListener('click', handleClickOutside);
-    }
-  }
+  // Attach listener to close on esc and outside click
+  document.addEventListener('keydown', handleEscapeKey);
   document.addEventListener('click', handleClickOutside);
   
   return container;
@@ -88,10 +85,8 @@ function deleteOptionsBox() {
     activeBox = null;
   }
 
-  if (activeEscapeHandler) {
-    document.removeEventListener('keydown', activeEscapeHandler);
-    activeEscapeHandler = null;
-  }
+  document.removeEventListener('keydown', handleEscapeKey);
+  document.removeEventListener('click', handleClickOutside);
 }
 
 module.exports = {

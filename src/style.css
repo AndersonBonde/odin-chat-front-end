@@ -40,31 +40,62 @@ body {
   background-color: var(--color-primary);
   min-height: 80px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  gap: 1rem;
 }
 
 #userName {
   position: relative;
   font-weight: bold;
+  margin-right: auto;
 }
 
-.login-button,
-#logout-button {
+#login-button,
+#logout-button,
+#dropdown-settings-button {
+  font-size: 1rem;
   background-color: white;
   color: var(--color-dark-text);
   padding: .5rem 1rem;
+  border: none;
   border-radius: .5rem;
   text-decoration: none;
   font-weight: bold;
 }
 
-.login-button:hover,
-#logout-button:hover {
+#login-button:hover,
+#logout-button:hover,
+#dropdown-settings-button:hover {
   cursor: pointer;
   outline: 1px solid var(--color-border);
   background-color: var(--color-primary-light);
+}
+
+.dropdown-settings-menu {
+  position: relative;
+}
+
+.dropdown-settings-menu-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  margin-top: .25rem;
+  min-width: 160px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  border: 1px solid var(--color-dark-text);
+}
+
+.dropdown-settings-menu-content a {
+  color: black;
+  padding: 12px 1rem;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-settings-menu-content a:hover {
+  background-color: var(--color-primary);
 }
 
 /* 
@@ -333,4 +364,8 @@ button[type='submit']:hover {
 .edit-button,
 .delete-button {
   padding: 2px 6px;
+}
+
+.show {
+  display: block;
 }

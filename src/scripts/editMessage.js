@@ -2,6 +2,9 @@ let activeEditForm = null;
 let activeMessageContainer = null;
 
 function removeEditForm() {
+  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener('keydown', handleEscapeKey);
+
   if (activeMessageContainer) {
     activeMessageContainer.style.display = 'block';
     activeMessageContainer = null;
@@ -15,6 +18,21 @@ function removeEditForm() {
 
 function updateOldMessage(newText) {
   activeMessageContainer.innerText = newText;
+}
+
+function handleClickOutside(e) {
+  if (
+    activeEditForm &&
+    !activeEditForm.contains(e.target)
+  ) {
+    removeEditForm();
+  }
+}
+
+function handleEscapeKey(e) {
+  if (e.key === 'Escape') {
+    removeEditForm();
+  }
 }
 
 // Event listener to allow users to edit their messages
@@ -58,23 +76,8 @@ function editMessageTextEventListener(e, container) {
   editTextarea.focus();
   editTextarea.setSelectionRange(editTextarea.value.length, editTextarea.value.length);
 
-  // Cancel edit from pressing esc
-  editForm.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape')
-      removeEditForm();
-  });
-
-  // Dismiss editForm on outside click
-  function handleClickOutside(e) {
-    if (
-      activeEditForm &&
-      !activeEditForm.contains(e.target)
-    ) {
-      removeEditForm();
-      document.removeEventListener('click', handleClickOutside);
-    }
-  }
-
+  // Attach listeners to close on esc and outside click
+  document.addEventListener('keydown', handleEscapeKey);
   document.addEventListener('click', handleClickOutside);
 }
 
