@@ -47,17 +47,21 @@
         </div>
       </aside>
       <div id="user-profile-container">
-        <div class="profile-field">
-          <label for="name">Name:</label>
-          <input type="text" name="name" id="name" readonly>
-        </div>
-        <div class="profile-field">
-          <label for="display-color">Display Color:</label>
-          <input type="color" name="display-color" id="display-color" readonly>
-        </div>
-        <button class="button back-button" type="button" ><< Back</button>
-        <button type="button" class="button profile-edit-button">Edit</button>
-        <button type="submit" class="button" disabled>Send</button>
+        <form id="profile-form" autocomplete="off">
+          <div class="profile-field">
+            <label for="profile-name">Name</label>
+            <input type="text" name="profile-name" id="profile-name" disabled>
+          </div>
+          <div class="profile-field">
+            <label for="display-color">Display Color</label>
+            <input type="color" name="display-color" id="display-color" disabled>
+          </div>
+          <div class="profile-buttons-container">
+            <button class="button back-button" type="button" ><< Back</button>
+            <button type="button" class="button profile-edit-button">Edit</button>
+            <button type="submit" class="button">Send</button>
+          </div>
+        </form>
       </div>
     </main>
   </div>

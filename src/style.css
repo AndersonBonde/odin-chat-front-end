@@ -303,8 +303,32 @@ button[type='submit']:hover {
 
 #user-profile-container {
   display: none;
-  background-color: rgb(246, 246, 246);
   flex: 1;
+}
+
+#profile-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-block: 4px;
+  padding: 2px 8px;
+}
+
+.profile-field input {
+  padding: 2px 4px;
+}
+
+.profile-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding: 4px 8px;
 }
 
 /* 

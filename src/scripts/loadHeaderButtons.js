@@ -1,3 +1,5 @@
+const { loadProfile } = require('./profile');
+
 const token = localStorage.getItem('token');
 const loginButton = document.querySelector('#login-button');
 const logoutButton = document.getElementById('logout-button');
@@ -5,8 +7,6 @@ const settingsButton = document.querySelector('#dropdown-settings-button');
 const dropdown = document.querySelector('.dropdown-settings-menu');
 const content = document.querySelector('.dropdown-settings-menu-content');
 const profileButton = document.querySelector('#profile-button');
-
-// TODO Add user profile
 
 if (token) {
   loginButton.style.display = 'none';
@@ -58,6 +58,8 @@ function openUserProfile() {
   document.querySelector('#chat').style.display = 'none';
   document.querySelector('aside').style.display = 'none';
   document.querySelector('#user-profile-container').style.display = 'block';
+
+  loadProfile();
 }
 
 function leaveUserProfile() {
