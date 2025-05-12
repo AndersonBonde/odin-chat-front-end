@@ -4,6 +4,7 @@ const logoutButton = document.getElementById('logout-button');
 const settingsButton = document.querySelector('#dropdown-settings-button');
 const dropdown = document.querySelector('.dropdown-settings-menu');
 const content = document.querySelector('.dropdown-settings-menu-content');
+const profileButton = document.querySelector('#profile-button');
 
 // TODO Add user profile
 
@@ -47,3 +48,21 @@ function closeMenuDropdown() {
   content.classList.remove('show');
   document.removeEventListener('click', handleClickOutside);
 }
+
+profileButton.addEventListener('click', (e) => {
+  closeMenuDropdown();
+  openUserProfile();
+});
+
+function openUserProfile() {
+  document.querySelector('#chat').style.display = 'none';
+  document.querySelector('aside').style.display = 'none';
+  document.querySelector('#user-profile-container').style.display = 'block';
+}
+
+function leaveUserProfile() {
+  document.querySelector('#chat').style.display = 'flex';
+  document.querySelector('aside').style.display = 'flex';
+  document.querySelector('#user-profile-container').style.display = 'none';
+}
+document.querySelector('#user-profile-container .back-button').addEventListener('click', leaveUserProfile);

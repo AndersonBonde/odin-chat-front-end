@@ -9,13 +9,12 @@
   <div class="container">
     <header>
       <p id="userName">Welcome (connecting) <span id="spinner"></span></p>
-      <a href="./login.html" id="login-button">Login</a>
-      <a id="logout-button">Logout</a>
+      <a href="./login.html" id="login-button" class="button">Login</a>
+      <a id="logout-button" class="button">Logout</a>
       <div class="dropdown-settings-menu">
-        <button type="button" id="dropdown-settings-button">Settings</button>
+        <button type="button" id="dropdown-settings-button" class="button">Settings</button>
         <div class="dropdown-settings-menu-content">
-          <a href="#">Profile</a>
-          <a href="#">Logout</a>
+          <a id="profile-button" href="#">Profile</a>
         </div>
       </div>
     </header>
@@ -47,6 +46,19 @@
           <h3>Online</h3>
         </div>
       </aside>
+      <div id="user-profile-container">
+        <div class="profile-field">
+          <label for="name">Name:</label>
+          <input type="text" name="name" id="name" readonly>
+        </div>
+        <div class="profile-field">
+          <label for="display-color">Display Color:</label>
+          <input type="color" name="display-color" id="display-color" readonly>
+        </div>
+        <button class="button back-button" type="button" ><< Back</button>
+        <button type="button" class="button profile-edit-button">Edit</button>
+        <button type="submit" class="button" disabled>Send</button>
+      </div>
     </main>
   </div>
 </body>

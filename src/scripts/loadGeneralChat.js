@@ -6,12 +6,18 @@ const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = null;
 
+function decodeHTMLEntities(str) {
+  const txt = document.createElement('textarea');
+  txt.innerHTML = str;
+  return txt.value;
+}
+
 function createChatMessage(author, message, messageId) {
   const messageText = document.createElement('p');
   let wrapper;
 
   messageText.classList.add('message-text');
-  messageText.innerText = message;
+  messageText.innerText = decodeHTMLEntities(message);
   messageText.setAttribute('data-id', messageId);
   messageText.setAttribute('data-author', author);
 

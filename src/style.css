@@ -54,21 +54,12 @@ body {
 #login-button,
 #logout-button,
 #dropdown-settings-button {
-  font-size: 1rem;
   background-color: white;
-  color: var(--color-dark-text);
-  padding: .5rem 1rem;
-  border: none;
-  border-radius: .5rem;
-  text-decoration: none;
-  font-weight: bold;
 }
 
 #login-button:hover,
 #logout-button:hover,
 #dropdown-settings-button:hover {
-  cursor: pointer;
-  outline: 1px solid var(--color-border);
   background-color: var(--color-primary-light);
 }
 
@@ -241,10 +232,6 @@ aside {
   border-radius: 16px 16px 0 0;
 }
 
-.follow-card {
-
-}
-
 #online-list {
   border-radius: 0 0 16px 16px;
 }
@@ -295,22 +282,6 @@ aside {
   padding: 1rem 0;
 }
 
-.back-button {
-  background-color: var(--color-background);
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  color: var(--color-dark-text);
-  font-weight: bold;
-  margin-top: 1rem;
-}
-
-.back-button:hover {
-  cursor: pointer;
-  background-color: var(--color-primary-light);
-  outline: 1px solid var(--color-border);
-}
-
 button[type='submit'] {
   background-color: var(--color-primary);
   padding: 10px 20px;
@@ -324,6 +295,16 @@ button[type='submit']:hover {
   cursor: pointer;
   background-color: var(--color-primary-light);
   outline: 1px solid var(--color-border);
+}
+
+/* 
+  --- User profile
+*/
+
+#user-profile-container {
+  display: none;
+  background-color: rgb(246, 246, 246);
+  flex: 1;
 }
 
 /* 
@@ -368,4 +349,20 @@ button[type='submit']:hover {
 
 .show {
   display: block;
+}
+
+.button {
+  font-size: 1rem;
+  background-color: var(--color-primary);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  color: var(--color-dark-text);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: var(--color-primary-light);
 }
