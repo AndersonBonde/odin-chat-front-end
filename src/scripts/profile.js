@@ -42,10 +42,15 @@ profileForm.addEventListener('submit', async (e) => {
         displayColor 
       }),
     });
-    const data = await res.json();
-    console.log(data.message);
+    
+    // Update user.profile on localStorage
+    const updatedProfile = {
+      name: profileName,
+      displayColor,
+    };
 
-    // Update user.profile to reflect the changes
+    user.profile = updatedProfile;
+    localStorage.setItem('user', JSON.stringify(user));
     
   } catch (err) {
     console.error(`Failed to PATCH profile`, err);

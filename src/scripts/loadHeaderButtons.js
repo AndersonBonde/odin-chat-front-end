@@ -66,5 +66,8 @@ function leaveUserProfile() {
   document.querySelector('#chat').style.display = 'flex';
   document.querySelector('aside').style.display = 'flex';
   document.querySelector('#user-profile-container').style.display = 'none';
+
+  // Reload the page to reflect any changes the user made in their profile
+  window.location.href = './index.html';
 }
 document.querySelector('#user-profile-container .back-button').addEventListener('click', leaveUserProfile);
