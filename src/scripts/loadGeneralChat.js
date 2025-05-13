@@ -12,7 +12,7 @@ function decodeHTMLEntities(str) {
   return txt.value;
 }
 
-function createChatMessage(author, message, messageId) {
+function createChatMessage(author, message, messageId, profile = null) {
   const messageText = document.createElement('p');
   let wrapper;
 
@@ -45,6 +45,14 @@ function createChatMessage(author, message, messageId) {
   
     wrapper.appendChild(messageAuthor);
     wrapper.appendChild(messageText);
+
+    // Update card with profile options
+    if (profile) {
+      const { name, displayColor } = profile;
+
+      messageAuthor.innerText = name;
+      messageAuthor.style.color = displayColor;
+    }
   
     chatWindow.appendChild(wrapper);
   }
@@ -81,8 +89,9 @@ chatForm.addEventListener('submit', async (e) => {
 
     const author = user ? user.email : guestName;
     const messageId = data.newMessage.id;
+    const profile = author ? author.profile : null;
 
-    createChatMessage(author, text, messageId);
+    createChatMessage(author, text, messageId, profile);
     scrollToBottom();
     
   } catch (err) {
@@ -107,8 +116,9 @@ chatForm.addEventListener('submit', async (e) => {
       const { text, author, guestName, id } = data.messages[i];
 
       const messageAuthor = guestName ? guestName : author.email;
+      const profile = author ? author.profile : null;
 
-      createChatMessage(messageAuthor, text, id);
+      createChatMessage(messageAuthor, text, id, profile);
     }
 
     scrollToBottom();

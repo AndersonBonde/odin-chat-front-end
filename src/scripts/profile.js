@@ -4,6 +4,7 @@ const displayColorInput = document.querySelector('#display-color');
 const editButton = document.querySelector('.profile-edit-button');
 const submitButton = document.querySelector('.profile-buttons-container button[type="submit"]');
 const user = JSON.parse(localStorage.getItem('user'));
+const token = localStorage.getItem('token');
 
 function loadProfile() {
   nameInput.value = user.profile.name;
@@ -16,12 +17,40 @@ function loadProfile() {
   displayColorInput.setAttribute('disabled', true);
 }
 
-profileForm.addEventListener('submit', (e) => {
+profileForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  console.log(nameInput.value, displayColorInput.value);
+  const { id } = user; 
+  const profileName = nameInput.value;
+  const displayColor = displayColorInput.value;
 
-  // TODO Fetch POST to server
+  // If user didn't change any value, return;
+  if (profileName == user.profile.name && displayColor == user.profile.displayColor) {
+    loadProfile();
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3000/users/profile/${id}`, {
+      method: 'PATCH',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },
+      body: JSON.stringify({ 
+        profileName,
+        displayColor 
+      }),
+    });
+    const data = await res.json();
+    console.log(data.message);
+
+    // Update user.profile to reflect the changes
+    
+  } catch (err) {
+    console.error(`Failed to PATCH profile`, err);
+  }
+
   loadProfile();
 });
 
