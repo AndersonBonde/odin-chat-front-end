@@ -14,7 +14,7 @@ function decodeHTMLEntities(str) {
   return txt.value;
 }
 
-function createChatMessage(author, message, messageId, profile = null) {
+function createChatMessage(author, message, messageId, profile, authorId) {
   const messageText = document.createElement('p');
   let wrapper;
 
@@ -63,12 +63,11 @@ function createChatMessage(author, message, messageId, profile = null) {
     
     // Render user options box when a userName is clicked && it's not a guest
     if (user && author.slice(0, 5) !== 'guest') {
-      messageAuthor.classList.add('hover-is-pointer');    
-
-      // TODO Add data.id to the messageAuthor div
+      messageAuthor.classList.add('hover-is-pointer');
+      messageAuthor.setAttribute('data-authorId', authorId);
 
       messageAuthor.addEventListener('click', (e) => {
-        const userOptionsBox = createUserOptionsBox();
+        const userOptionsBox = createUserOptionsBox(authorId);
         messageAuthor.appendChild(userOptionsBox);
       })
     }
@@ -103,10 +102,11 @@ chatForm.addEventListener('submit', async (e) => {
     const data = await res.json();
 
     const author = user ? user.email : guestName;
+    const authorId = user ? user.id : null;
     const messageId = data.newMessage.id;
     const profile = user ? user.profile : null;
 
-    createChatMessage(author, text, messageId, profile);
+    createChatMessage(author, text, messageId, profile, authorId);
     scrollToBottom();
     
   } catch (err) {
@@ -133,8 +133,9 @@ chatForm.addEventListener('submit', async (e) => {
 
       const messageAuthor = guestName ? guestName : author.email;
       const profile = author ? author.profile : null;
+      const authorId = author ? author.id : null;
 
-      createChatMessage(messageAuthor, text, id, profile);
+      createChatMessage(messageAuthor, text, id, profile, authorId);
     }
 
     scrollToBottom();
