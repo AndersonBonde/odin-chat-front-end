@@ -5,7 +5,7 @@ let activeBox = null;
 
 function handleEscapeKey(e) {
   if (e.key === 'Escape') {
-    deleteOptionsBox();
+    deleteMessageOptionsBox();
   }
 }
 
@@ -14,12 +14,12 @@ function handleClickOutside(e) {
     activeBox &&
     !activeBox.parentElement.contains(e.target)
   ) {
-    deleteOptionsBox();
+    deleteMessageOptionsBox();
   }
 }
 
 function createMessageOptionsBox(messageId) {
-  deleteOptionsBox();
+  deleteMessageOptionsBox();
 
   const container = document.createElement('div');
   container.classList.add('options-card');
@@ -41,7 +41,7 @@ function createEditButton(messageId) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Edit');
-  button.classList.add('edit-button');
+  button.classList.add('options-button');
   button.innerText = '✏️';
 
   function editButtonListener(e) {
@@ -50,7 +50,7 @@ function createEditButton(messageId) {
 
     const messageContainer = document.querySelector(`.message-text[data-id="${messageId}"]`);
 
-    deleteOptionsBox();
+    deleteMessageOptionsBox();
     editMessageTextEventListener(e, messageContainer);
   }
 
@@ -63,14 +63,14 @@ function createDeleteButton(messageId) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Delete');
-  button.classList.add('delete-button');
+  button.classList.add('options-button');
   button.innerText = '🗑️';
 
   function deleteButtonListener(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    deleteOptionsBox();
+    deleteMessageOptionsBox();
     deleteMessageEventListener(e, messageId);
   }
 
@@ -79,7 +79,7 @@ function createDeleteButton(messageId) {
   return button;
 }
 
-function deleteOptionsBox() {
+function deleteMessageOptionsBox() {
   if (activeBox) {
     activeBox.remove();
     activeBox = null;

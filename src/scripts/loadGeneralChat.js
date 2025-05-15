@@ -1,4 +1,5 @@
 const { createMessageOptionsBox } = require('./displayMessageOptionsPopup');
+const { createUserOptionsBox } = require('./displayUserOptionsBox');
 
 const chatForm = document.getElementById('chat-typing-box');
 const user = JSON.parse(localStorage.getItem('user'));
@@ -27,8 +28,8 @@ function createChatMessage(author, message, messageId, profile = null) {
     messageText.classList.add('hover-is-pointer');
 
     messageText.addEventListener('click', (e) => {
-      const optionsBox = createMessageOptionsBox(messageId);
-      messageText.appendChild(optionsBox);
+      const messageOptionsBox = createMessageOptionsBox(messageId);
+      messageText.appendChild(messageOptionsBox);
     });
   }
 
@@ -59,11 +60,17 @@ function createChatMessage(author, message, messageId, profile = null) {
   
     chatWindow.appendChild(wrapper);
 
+    
     // Render user options box when a userName is clicked && it's not a guest
     if (user && author.slice(0, 5) !== 'guest') {
       messageAuthor.classList.add('hover-is-pointer');    
 
+      // TODO Add data.id to the messageAuthor div
 
+      messageAuthor.addEventListener('click', (e) => {
+        const userOptionsBox = createUserOptionsBox();
+        messageAuthor.appendChild(userOptionsBox);
+      })
     }
   }
 

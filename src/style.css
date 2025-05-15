@@ -127,6 +127,7 @@ main {
 }
 
 .message-author {
+  position: relative;
   font-weight: bold;
 }
 
@@ -369,8 +370,7 @@ button[type='submit']:hover {
   border-radius: 6px;
 }
 
-.edit-button,
-.delete-button {
+.options-button {
   padding: 2px 6px;
 }
 
