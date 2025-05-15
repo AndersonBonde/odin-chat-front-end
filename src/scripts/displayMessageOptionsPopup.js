@@ -18,7 +18,7 @@ function handleClickOutside(e) {
   }
 }
 
-function createOptionsBox(messageId) {
+function createMessageOptionsBox(messageId) {
   deleteOptionsBox();
 
   const container = document.createElement('div');
@@ -90,5 +90,5 @@ function deleteOptionsBox() {
 }
 
 module.exports = {
-  createOptionsBox,
+  createMessageOptionsBox,
 }

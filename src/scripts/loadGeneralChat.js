@@ -1,4 +1,4 @@
-const { createOptionsBox } = require('./displayOptionsPopup');
+const { createMessageOptionsBox } = require('./displayMessageOptionsPopup');
 
 const chatForm = document.getElementById('chat-typing-box');
 const user = JSON.parse(localStorage.getItem('user'));
@@ -6,6 +6,7 @@ const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = null;
 
+// Decode escaped characters from database back to original symbols
 function decodeHTMLEntities(str) {
   const txt = document.createElement('textarea');
   txt.innerHTML = str;
@@ -21,10 +22,12 @@ function createChatMessage(author, message, messageId, profile = null) {
   messageText.setAttribute('data-id', messageId);
   messageText.setAttribute('data-author', author);
 
-  // Render options box if own message is clicked for edit and delete
+  // Render edit options box if own message is clicked for edit and delete
   if (user && user.email == author) {
+    messageText.classList.add('hover-is-pointer');
+
     messageText.addEventListener('click', (e) => {
-      const optionsBox = createOptionsBox(messageId);
+      const optionsBox = createMessageOptionsBox(messageId);
       messageText.appendChild(optionsBox);
     });
   }
@@ -55,6 +58,13 @@ function createChatMessage(author, message, messageId, profile = null) {
     }
   
     chatWindow.appendChild(wrapper);
+
+    // Render user options box when a userName is clicked && it's not a guest
+    if (user && author.slice(0, 5) !== 'guest') {
+      messageAuthor.classList.add('hover-is-pointer');    
+
+
+    }
   }
 
   lastMessageAuthor = author;
@@ -72,8 +82,6 @@ chatForm.addEventListener('submit', async (e) => {
   const text = document.getElementById('chat-textarea').value;
   if (text.length < 1) return;
 
-  const user = JSON.parse(localStorage.getItem('user'));
-
   const id = user?.id;
   const guestName = localStorage.getItem('guest') || null;
 
@@ -89,7 +97,7 @@ chatForm.addEventListener('submit', async (e) => {
 
     const author = user ? user.email : guestName;
     const messageId = data.newMessage.id;
-    const profile = author ? author.profile : null;
+    const profile = user ? user.profile : null;
 
     createChatMessage(author, text, messageId, profile);
     scrollToBottom();
@@ -101,6 +109,7 @@ chatForm.addEventListener('submit', async (e) => {
   chatForm.reset();
 });
 
+// Load and display all messages on page load
 (async function loadGeneralChat() {
   // Focus chatBox on first load
   const chat = document.getElementById('chat-textarea');
