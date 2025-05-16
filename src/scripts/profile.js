@@ -1,12 +1,15 @@
+const { syncUser } = require('./utils');
+
 const profileForm = document.querySelector('#profile-form');
 const nameInput = document.querySelector('#profile-name');
 const displayColorInput = document.querySelector('#display-color');
 const editButton = document.querySelector('.profile-edit-button');
 const submitButton = document.querySelector('.profile-buttons-container button[type="submit"]');
-const user = JSON.parse(localStorage.getItem('user'));
 const token = localStorage.getItem('token');
 
 function loadProfile() {
+  const user = JSON.parse(localStorage.getItem('user'));
+
   nameInput.value = user.profile.name;
   displayColorInput.value = user.profile.displayColor;
 
@@ -20,6 +23,8 @@ function loadProfile() {
 profileForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const { id } = user; 
   const profileName = nameInput.value;
   const displayColor = displayColorInput.value;
@@ -31,7 +36,7 @@ profileForm.addEventListener('submit', async (e) => {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/users/profile/${id}`, {
+    await fetch(`http://localhost:3000/users/profile/${id}`, {
       method: 'PATCH',
       headers: { 
         'Content-Type': 'application/json',
@@ -43,20 +48,12 @@ profileForm.addEventListener('submit', async (e) => {
       }),
     });
     
-    // Update user.profile on localStorage
-    const updatedProfile = {
-      name: profileName,
-      displayColor,
-    };
-
-    user.profile = updatedProfile;
-    localStorage.setItem('user', JSON.stringify(user));
+    await syncUser();
+    loadProfile();
     
   } catch (err) {
     console.error(`Failed to PATCH profile`, err);
   }
-
-  loadProfile();
 });
 
 function clickEdit() {
