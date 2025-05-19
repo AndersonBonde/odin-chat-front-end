@@ -1,3 +1,8 @@
+const { openUserProfile } = require('./profile');
+const { syncUser } = require('./utils');
+const { populateFollowingList } = require('./populateFollowList');
+
+const token = localStorage.getItem('token');
 let activeBox = null;
 
 function handleEscapeKey(e) {
@@ -44,21 +49,74 @@ function createNewChatButton(authorId, user) {
   return button;
 }
 
+function followingThisUser(authorId, user) {
+  return user.following.some((f) => f.id == authorId);
+}
+
+async function followUser(e, authorId) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  deleteUserOptionsBox();
+
+  try {
+    await fetch(`http://localhost:3000/users/following/${authorId}`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      },
+    }); 
+
+    
+  } catch (err) {
+    console.error(`Failed to follow user`, err);
+  }
+
+  await syncUser();
+  populateFollowingList();
+}
+
+async function unfollowUser(e, authorId) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  deleteUserOptionsBox();
+
+  try {
+    await fetch(`http://localhost:3000/users/following/${authorId}`, {
+    method: 'DELETE',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      },
+    }); 
+
+  } catch (err) {
+    console.error(`Failed to unfollow user`, err);
+  }
+
+  await syncUser();
+  populateFollowingList();
+}
+
 function createFollowUserButton(authorId, user) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
-  button.setAttribute('title', 'Follow');
   button.classList.add('options-button');
-  button.innerText = '➕👤';
 
-  button.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  // Check if is already following
+  if (followingThisUser(authorId, user)) {
+    button.setAttribute('title', 'Unfollow');
+    button.innerText = '➖👤';
 
-    console.log(`User with id: ${user.id} is now following user with id: ${authorId} WIP`);
+    button.addEventListener('click', (e) => unfollowUser(e, authorId));
+  } else {
+    button.setAttribute('title', 'Follow');
+    button.innerText = '➕👤';
 
-    deleteUserOptionsBox();
-  });
+    button.addEventListener('click', (e) => followUser(e, authorId));
+  }
 
   return button;
 }
@@ -68,13 +126,13 @@ function createOpenOwnProfileButton() {
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Profile');
   button.classList.add('options-button');
-  button.innerText = 'Profile';
+  button.innerText = '👤';
 
   button.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log('Open own profile');
+    openUserProfile();
 
     deleteUserOptionsBox();
   });

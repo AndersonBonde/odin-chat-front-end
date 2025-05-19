@@ -35,7 +35,7 @@ function createFollowCard(user) {
   return card;
 }
 
-(async function populateFollowingList() {
+async function populateFollowingList() {
   clearFollowingList();
 
   const title = document.createElement('h3');
@@ -50,8 +50,13 @@ function createFollowCard(user) {
       followListDiv.appendChild(card);
     })
   }
-})();
+};
+populateFollowingList();
 
 function clearFollowingList() {
   followListDiv.innerHTML = '';
+}
+
+module.exports = {
+  populateFollowingList,
 }
