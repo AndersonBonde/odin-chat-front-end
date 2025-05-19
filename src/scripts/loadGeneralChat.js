@@ -59,7 +59,6 @@ function createChatMessage(author, message, messageId, profile, authorId) {
     }
   
     chatWindow.appendChild(wrapper);
-
     
     // Render user options box when a userName is clicked && it's not a guest
     if (user && author.slice(0, 5) !== 'guest') {

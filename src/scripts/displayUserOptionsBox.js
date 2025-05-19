@@ -1,5 +1,3 @@
-const user = JSON.parse(localStorage.getItem('user'));
-
 let activeBox = null;
 
 function handleEscapeKey(e) {
@@ -27,7 +25,7 @@ function deleteUserOptionsBox() {
   document.removeEventListener('click', handleClickOutside);
 }
 
-function createNewChatButton(authorId) {
+function createNewChatButton(authorId, user) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Create chat');
@@ -46,7 +44,7 @@ function createNewChatButton(authorId) {
   return button;
 }
 
-function createFollowUserButton(authorId) {
+function createFollowUserButton(authorId, user) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Follow');
@@ -65,18 +63,43 @@ function createFollowUserButton(authorId) {
   return button;
 }
 
+function createOpenOwnProfileButton() {
+  const button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.setAttribute('title', 'Profile');
+  button.classList.add('options-button');
+  button.innerText = 'Profile';
+
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    console.log('Open own profile');
+
+    deleteUserOptionsBox();
+  });
+
+  return button;
+}
+
 function createUserOptionsBox(authorId) {
   deleteUserOptionsBox();
+
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const container = document.createElement('div');
   container.classList.add('options-card');
 
-  // TODO Add profile button when clicking own user
+  // Buttons for clicking own user
+  if (user.id == authorId) {
+    const profileButton = createOpenOwnProfileButton();
+    container.append(profileButton);
+  }
 
-  // Add button only when clicking other users
+  // Buttons for clicking other users
   if (user.id != authorId) {
-    const newChatButton = createNewChatButton(authorId);
-    const followUser = createFollowUserButton(authorId);
+    const newChatButton = createNewChatButton(authorId, user);
+    const followUser = createFollowUserButton(authorId, user);
     container.append(newChatButton, followUser);
   }
 
