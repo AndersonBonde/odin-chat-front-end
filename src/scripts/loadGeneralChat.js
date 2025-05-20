@@ -91,7 +91,7 @@ chatForm.addEventListener('submit', async (e) => {
   const guestName = localStorage.getItem('guest') || null;
 
   try {
-    const res = await fetch('http://localhost:3000/messages/chat-rooms/general', {
+    const res = await fetch('http://localhost:3000/chat-rooms/general', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, text, guestName }),
@@ -122,7 +122,7 @@ chatForm.addEventListener('submit', async (e) => {
   chat.focus();
 
   try {
-    const res = await fetch('http://localhost:3000/messages/chat-rooms/general');
+    const res = await fetch('http://localhost:3000/chat-rooms/general');
     if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
 
     const data = await res.json();
