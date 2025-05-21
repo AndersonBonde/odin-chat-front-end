@@ -216,7 +216,7 @@ aside {
 }
 
 #follow-list,
-#online-list {
+#room-list {
   flex-grow: 1;
   padding: 1rem;
   background-color: var(--color-primary-light);
@@ -227,7 +227,7 @@ aside {
 }
 
 #follow-list h3,
-#online-list h3 {
+#room-list h3 {
   text-align: center;
   margin-bottom: 4px;
 }
@@ -236,8 +236,14 @@ aside {
   border-radius: 16px 16px 0 0;
 }
 
-#online-list {
+#room-list {
   border-radius: 0 0 16px 16px;
+}
+
+.room:hover {
+  color: black;
+  background-color: var(--color-background);
+  cursor: pointer;
 }
 
 /* 

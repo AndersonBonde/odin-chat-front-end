@@ -37,6 +37,8 @@ function createNewChatButton(authorId, user) {
   button.classList.add('options-button');
   button.innerText = '✚';
 
+  // TODO Create new chat or open existing one
+
   button.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();

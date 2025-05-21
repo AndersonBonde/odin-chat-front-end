@@ -6,6 +6,7 @@ const user = JSON.parse(localStorage.getItem('user'));
 const chatWindow = document.getElementById('chat-window');
 
 let lastMessageAuthor = null;
+let chatFormListener = null;
 
 // Decode escaped characters from database back to original symbols
 function decodeHTMLEntities(str) {
@@ -77,11 +78,52 @@ function createChatMessage(author, message, messageId, profile, authorId) {
   return wrapper;
 }
 
+// Scroll to bottom(most recent) in case the chat window overflows
 function scrollToBottom() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-chatForm.addEventListener('submit', async (e) => {
+// Load and display general messages on chat window
+async function loadGeneralChat() {
+  clearChat();
+
+  // Focus chatBox on first load
+  const chat = document.getElementById('chat-textarea');
+  chat.focus();
+
+  // Fetch all general chat messages from server
+  try {
+    const res = await fetch('http://localhost:3000/chat-rooms/general');
+    if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
+
+    const data = await res.json();
+
+    // Create message-card for each message and display them on chat window
+    for (let i = 0; i < data.messages.length; i++) {
+      const { text, author, guestName, id } = data.messages[i];
+
+      const messageAuthor = guestName ? guestName : author.email;
+      const profile = author ? author.profile : null;
+      const authorId = author ? author.id : null;
+
+      createChatMessage(messageAuthor, text, id, profile, authorId);
+    }
+
+    scrollToBottom();
+
+    // Attach correct listener to chat form submit
+    chatForm.addEventListener('submit', generalChatListener);
+    chatFormListener = generalChatListener;
+
+  } catch (err) {
+    console.error('Failed to load general messages', err);
+  }
+};
+
+// Loads general chat on first load
+loadGeneralChat();
+
+async function generalChatListener(e) {
   e.preventDefault();
   
   const text = document.getElementById('chat-textarea').value;
@@ -113,33 +155,56 @@ chatForm.addEventListener('submit', async (e) => {
   }
 
   chatForm.reset();
-});
+}
 
-// Load and display all messages on page load
-(async function loadGeneralChat() {
-  // Focus chatBox on first load
-  const chat = document.getElementById('chat-textarea');
-  chat.focus();
+async function chatListener(e, chatId) {
+  e.preventDefault();
+  
+  const text = document.getElementById('chat-textarea').value;
+  if (text.length < 1) return;
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
 
   try {
-    const res = await fetch('http://localhost:3000/chat-rooms/general');
-    if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
+    const res = await fetch(`http://localhost:3000/chat-rooms/${chatId}`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },
+      body: JSON.stringify({ 
+        id: user.id,
+        text
+      }),
+    });
+    if (!res.ok) throw new Error(`Failed to POST message to chat with id: ${chatId}, Status: ${res.status}`);
 
     const data = await res.json();
 
-    for (let i = 0; i < data.messages.length; i++) {
-      const { text, author, guestName, id } = data.messages[i];
+    const author = user.email;
+    const authorId = user.id;
+    const messageId = data.newMessage.id;
+    const profile = user.profile;
 
-      const messageAuthor = guestName ? guestName : author.email;
-      const profile = author ? author.profile : null;
-      const authorId = author ? author.id : null;
-
-      createChatMessage(messageAuthor, text, id, profile, authorId);
-    }
-
+    createChatMessage(author, text, messageId, profile, authorId);
     scrollToBottom();
 
   } catch (err) {
-    console.error('Failed to load general messages', err);
+    console.error('Failed to POST message', err);
   }
-})();
+}
+
+function clearChat() {
+  if (chatFormListener) {
+    chatForm.removeEventListener('submit', chatFormListener);
+    chatFormListener = null;
+  }
+
+  chatWindow.innerHTML = '';
+}
+
+module.exports = {
+  loadGeneralChat,
+
+}
