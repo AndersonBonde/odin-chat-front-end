@@ -123,6 +123,52 @@ async function loadGeneralChat() {
 // Loads general chat on first load
 loadGeneralChat();
 
+async function loadChatWithId(chatId) {
+  clearChat();
+
+  // Focus chatBox on first load
+  const chat = document.getElementById('chat-textarea');
+  chat.focus();
+
+  // Fetch all messages from chat with id: ${id}
+  try {
+    const token = localStorage.getItem('token');
+
+    const res = await fetch(`http://localhost:3000/chat-rooms/${chatId}`, {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': token, 
+      }
+    });
+    if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
+
+    const data = await res.json();
+
+    // Create message-card for each message and display them on chat window
+    for (let i = 0; i < data.messages.length; i++) {
+      const { text, author, id } = data.messages[i];
+
+      const messageAuthor = author.email;
+      const profile = author.profile;
+      const authorId = author.id;
+
+      createChatMessage(messageAuthor, text, id, profile, authorId);
+    }
+
+    scrollToBottom();
+
+    // Attach correct listener to chat form submit
+    const listener = (e) => chatListener(e, chatId);
+    chatForm.addEventListener('submit', listener);
+    chatFormListener = listener;
+
+  } catch (err) {
+    console.error('Failed to load general messages', err);
+  }
+  
+}
+
 async function generalChatListener(e) {
   e.preventDefault();
   
@@ -206,5 +252,5 @@ function clearChat() {
 
 module.exports = {
   loadGeneralChat,
-
+  loadChatWithId,
 }

@@ -1,3 +1,5 @@
+const { loadChatWithId } = require('./loadGeneralChat');
+
 const roomList = document.querySelector('#room-list');
 
 // Fetch chat rooms the users is currently participating
@@ -29,16 +31,14 @@ function clearRoomList() {
   roomList.innerHTML = '';
 }
 
-function clickRoomListener(e, room) {
+async function clickRoomListener(e, room) {
   e.preventDefault();
-
-  // TODO Clear chat and load correct messages to chat-window
-
-  console.log(`Room with id: ${room.id} was clicked WIP`);
+  
+  await loadChatWithId(room.id);
+  console.log(`Room with id: ${room.id} was loaded`);
 }
 
 function createRoomCard(room) {
-  console.log(room)
   const card = document.createElement('div');
   card.classList.add('room-card');
   card.setAttribute('data-id', room.id);
