@@ -1,5 +1,6 @@
 const roomList = document.querySelector('#room-list');
 
+// Fetch chat rooms the users is currently participating
 async function fetchChatRooms() {
   const user = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem('token');
@@ -7,7 +8,7 @@ async function fetchChatRooms() {
   if (!user || !token) return;
 
   try {
-    const res = await fetch(`http://localhost:3000/users/chat-rooms/${user.id}`, {
+    const res = await fetch(`http://localhost:3000/users/chat-rooms`, {
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',
@@ -17,9 +18,52 @@ async function fetchChatRooms() {
 
     const data = await res.json();
 
-    return data;
+    return data.chatRooms;
 
   } catch (err) {
     console.error('Failed to fetch chat rooms list');
   }
+}
+
+function clearRoomList() {
+  roomList.innerHTML = '';
+}
+
+function clickRoomListener(e, room) {
+  e.preventDefault();
+
+  // TODO Clear chat and load correct messages to chat-window
+
+  console.log(`Room with id: ${room.id} was clicked WIP`);
+}
+
+function createRoomCard(room) {
+  console.log(room)
+  const card = document.createElement('div');
+  card.classList.add('room-card');
+  card.setAttribute('data-id', room.id);
+  card.innerText = room.name ? room.name : room.id;
+  card.addEventListener('click', (e) => clickRoomListener(e, room));
+
+  return card;
+}
+
+async function populateChatRoomList() {
+  clearRoomList();
+
+  const h3 = document.createElement('h3');
+  h3.innerText = 'Rooms';
+  roomList.append(h3);
+
+  const rooms = await fetchChatRooms();
+
+  rooms.forEach((room) => {
+    const card = createRoomCard(room);
+    roomList.append(card);
+  });
+}
+populateChatRoomList();
+
+module.exports = {
+  populateChatRoomList,
 }

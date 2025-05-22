@@ -240,10 +240,15 @@ aside {
   border-radius: 0 0 16px 16px;
 }
 
-.room:hover {
+.room-card {
+  padding: 0px 4px;
+}
+
+.room-card:hover {
   color: black;
   background-color: var(--color-background);
   cursor: pointer;
+  border-radius: 4px;
 }
 
 /* 
