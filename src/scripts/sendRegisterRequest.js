@@ -1,3 +1,5 @@
+const { syncUser } = require('./utils');
+
 const registerForm = document.querySelector('#register-form');
 
 registerForm.addEventListener('submit', async (e) => {
@@ -34,7 +36,7 @@ registerForm.addEventListener('submit', async (e) => {
     }
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
+    await syncUser();
 
     registerForm.reset();
 
