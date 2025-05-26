@@ -1,3 +1,5 @@
+const { syncUser, setTokenExpiration } = require('./utils');
+
 const loginForm = document.getElementById('login-form');
 
 loginForm.addEventListener('submit', async (e) => {
@@ -30,7 +32,8 @@ loginForm.addEventListener('submit', async (e) => {
     }
 
     localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
+    setTokenExpiration(parseInt(data.expiresIn));
+    await syncUser();
 
     loginForm.reset();
 

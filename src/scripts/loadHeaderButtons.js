@@ -21,8 +21,7 @@ if (token) {
 logoutButton.addEventListener('click', (e) => {
   e.preventDefault();
 
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
+  localStorage.clear();
 
   window.location.href = './index.html';
 });

@@ -1,6 +1,7 @@
 const { loadChatWithId } = require('./loadGeneralChat');
 
 const roomList = document.querySelector('#room-list');
+const user = JSON.parse(localStorage.getItem('user'));
 
 // Fetch chat rooms the users is currently participating
 async function fetchChatRooms() {
@@ -49,6 +50,8 @@ function createRoomCard(room) {
 }
 
 async function populateChatRoomList() {
+  if (!user) return;
+
   clearRoomList();
 
   const h3 = document.createElement('h3');

@@ -1,4 +1,4 @@
-const { syncUser } = require('./utils');
+const { syncUser, setTokenExpiration } = require('./utils');
 
 const registerForm = document.querySelector('#register-form');
 
@@ -36,6 +36,7 @@ registerForm.addEventListener('submit', async (e) => {
     }
 
     localStorage.setItem('token', data.token);
+    setTokenExpiration(parseInt(data.expiresIn));
     await syncUser();
 
     registerForm.reset();
