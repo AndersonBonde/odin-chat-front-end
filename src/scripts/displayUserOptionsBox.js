@@ -1,6 +1,7 @@
 const { openUserProfile } = require('./profile');
 const { syncUser, fetchChatRooms } = require('./utils');
 const { populateFollowingList } = require('./populateFollowList');
+const { populateChatRoomList } = require('./populateRoomList');
 
 const token = localStorage.getItem('token');
 let activeBox = null;
@@ -46,6 +47,8 @@ async function chatAlreadyExists(authorId, userId) {
   return false;
 }
 
+
+
 function createNewChatButton(authorId, user) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
@@ -60,12 +63,33 @@ function createNewChatButton(authorId, user) {
     const room = await chatAlreadyExists(authorId, user.id);
     
     if (!room) {
-      console.log('New room will be created');
+      const token = localStorage.getItem('token');
+      const memberIds = [user.id, authorId];
+
+      try {
+        const res = await fetch(`http://localhost:3000/chat-rooms`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token,
+          },
+          body: JSON.stringify({ memberIds }),
+        }); 
+
+        const data = await res.json();
+        console.log(data.message, data.chatRoom);
+
+        populateChatRoomList();
+        // TODO Load the newly created room
+
+      } catch (err) {
+        console.error(`Failed to create a new chat room`)
+      }
     } else {
+      // TODO Load the existing room
+
       console.log(`Chat with id: ${room.id} will be opened`);
     }
-
-    console.log(`User with id: ${user.id} is creating a new chat with user with id: ${authorId} WIP`);
 
     deleteUserOptionsBox();
   });
@@ -91,7 +115,6 @@ async function followUser(e, authorId) {
       'Authorization': token,
       },
     }); 
-
     
   } catch (err) {
     console.error(`Failed to follow user`, err);

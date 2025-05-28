@@ -1,4 +1,3 @@
-const { loadChatWithId } = require('./loadGeneralChat');
 const { fetchChatRooms } = require('./utils');
 
 const roomList = document.querySelector('#room-list');
@@ -10,6 +9,8 @@ function clearRoomList() {
 
 async function clickRoomListener(e, room) {
   e.preventDefault();
+
+  const { loadChatWithId } = require('./loadGeneralChat');
   
   await loadChatWithId(room.id);
   console.log(`Room with id: ${room.id} was loaded`);

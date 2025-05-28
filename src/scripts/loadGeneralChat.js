@@ -166,7 +166,6 @@ async function loadChatWithId(chatId) {
   } catch (err) {
     console.error('Failed to load general messages', err);
   }
-  
 }
 
 async function generalChatListener(e) {
