@@ -1,5 +1,5 @@
 const { openUserProfile } = require('./profile');
-const { syncUser } = require('./utils');
+const { syncUser, fetchChatRooms } = require('./utils');
 const { populateFollowingList } = require('./populateFollowList');
 
 const token = localStorage.getItem('token');
@@ -30,6 +30,22 @@ function deleteUserOptionsBox() {
   document.removeEventListener('click', handleClickOutside);
 }
 
+async function chatAlreadyExists(authorId, userId) {
+  const myRooms = await fetchChatRooms();
+
+  for (let i = 0; i < myRooms.length; i++) {
+    const room = myRooms[i];
+    const memberIds = room.members.map((m) => m.id);
+
+    if (
+      memberIds.length == 2 &&
+      memberIds.every((id) => (id == authorId || id == userId))
+    ) { return room };
+  }
+  
+  return false;
+}
+
 function createNewChatButton(authorId, user) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
@@ -37,11 +53,17 @@ function createNewChatButton(authorId, user) {
   button.classList.add('options-button');
   button.innerText = '✚';
 
-  // TODO Create new chat or open existing one
-
-  button.addEventListener('click', (e) => {
+  button.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    const room = await chatAlreadyExists(authorId, user.id);
+    
+    if (!room) {
+      console.log('New room will be created');
+    } else {
+      console.log(`Chat with id: ${room.id} will be opened`);
+    }
 
     console.log(`User with id: ${user.id} is creating a new chat with user with id: ${authorId} WIP`);
 

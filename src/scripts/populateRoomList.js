@@ -1,32 +1,8 @@
 const { loadChatWithId } = require('./loadGeneralChat');
+const { fetchChatRooms } = require('./utils');
 
 const roomList = document.querySelector('#room-list');
 const user = JSON.parse(localStorage.getItem('user'));
-
-// Fetch chat rooms the users is currently participating
-async function fetchChatRooms() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = localStorage.getItem('token');
-  
-  if (!user || !token) return;
-
-  try {
-    const res = await fetch(`http://localhost:3000/users/chat-rooms`, {
-      method: 'GET',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      }
-    });
-
-    const data = await res.json();
-
-    return data.chatRooms;
-
-  } catch (err) {
-    console.error('Failed to fetch chat rooms list');
-  }
-}
 
 function clearRoomList() {
   roomList.innerHTML = '';
