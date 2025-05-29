@@ -10,10 +10,13 @@ function clearRoomList() {
 async function clickRoomListener(e, room) {
   e.preventDefault();
 
-  const { loadChatWithId } = require('./loadGeneralChat');
-  
-  await loadChatWithId(room.id);
-  console.log(`Room with id: ${room.id} was loaded`);
+  const { loadChatWithId, loadGeneralChat } = require('./loadGeneralChat');
+
+  if (room.name == 'General Chat') {
+    await loadGeneralChat();
+  } else {
+    await loadChatWithId(room.id);
+  }
 }
 
 function createRoomCard(room) {

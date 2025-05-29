@@ -141,7 +141,6 @@ async function loadChatWithId(chatId) {
         'Authorization': token, 
       }
     });
-    if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
 
     const data = await res.json();
 
@@ -164,7 +163,7 @@ async function loadChatWithId(chatId) {
     chatFormListener = listener;
 
   } catch (err) {
-    console.error('Failed to load general messages', err);
+    console.error(`Failed to load messages from chat with id: ${chatId}`, err);
   }
 }
 
@@ -219,11 +218,9 @@ async function chatListener(e, chatId) {
         'Authorization': token,
       },
       body: JSON.stringify({ 
-        id: user.id,
-        text
+        text,
       }),
     });
-    if (!res.ok) throw new Error(`Failed to POST message to chat with id: ${chatId}, Status: ${res.status}`);
 
     const data = await res.json();
 
@@ -238,6 +235,8 @@ async function chatListener(e, chatId) {
   } catch (err) {
     console.error('Failed to POST message', err);
   }
+
+  chatForm.reset();
 }
 
 function clearChat() {
@@ -246,6 +245,7 @@ function clearChat() {
     chatFormListener = null;
   }
 
+  lastMessageAuthor = null;
   chatWindow.innerHTML = '';
 }
 

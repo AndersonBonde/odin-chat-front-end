@@ -59,6 +59,8 @@ function createNewChatButton(authorId, user) {
   button.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const { loadChatWithId } = require('./loadGeneralChat');
     
     const room = await chatAlreadyExists(authorId, user.id);
     
@@ -80,13 +82,13 @@ function createNewChatButton(authorId, user) {
         console.log(data.message, data.chatRoom);
 
         populateChatRoomList();
-        // TODO Load the newly created room
+        loadChatWithId(data.chatRoom.id);
 
       } catch (err) {
         console.error(`Failed to create a new chat room`)
       }
     } else {
-      // TODO Load the existing room
+      loadChatWithId(room.id);
 
       console.log(`Chat with id: ${room.id} will be opened`);
     }
