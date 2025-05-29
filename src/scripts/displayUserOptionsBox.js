@@ -89,8 +89,6 @@ function createNewChatButton(authorId, user) {
       }
     } else {
       loadChatWithId(room.id);
-
-      console.log(`Chat with id: ${room.id} will be opened`);
     }
 
     deleteUserOptionsBox();

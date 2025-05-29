@@ -1,32 +1,26 @@
+const { getGuestNameFromIP } = require('./api');
 const guestNameDiv = document.getElementById('userName');
 const spinner = document.getElementById('spinner');
 
 const token = localStorage.getItem('token');
 let guestName = null;
 
-async function getGuestName() {
-  try {
-    const res = await fetch('http://localhost:3000/connect');
-    if (!res.ok) throw new Error(`HTTP error: Status: ${res.status}`);
-
-    const data = await res.json();
-    hideSpinner();
-
-    return data.guestName;
-  } catch (err) {
-    console.error('Failed to connect to API:', err);
-  }
-}
-
 function hideSpinner() {
   spinner.style.display = 'none';
+}
+
+async function getGuestName() {
+  const name = await getGuestNameFromIP();
+  hideSpinner();
+
+  return name;
 }
 
 function showUsername(name) {
   guestNameDiv.innerText = 'Welcome ' + name;
 }
 
-(async function loadUsernameOnConnection() {
+async function loadUsernameOnConnection() {
   if (!token) {
     guestName = await getGuestName();
     showUsername(guestName);
@@ -37,4 +31,5 @@ function showUsername(name) {
 
     showUsername(user.email);
   }
-})();
+};
+loadUsernameOnConnection();

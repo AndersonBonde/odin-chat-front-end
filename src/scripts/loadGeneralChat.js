@@ -1,3 +1,4 @@
+const { getAllGeneralChatMessages, getAllMessagesFromChatWithId, postToGeneralChat, postToChatWithId } = require('./api');
 const { createMessageOptionsBox } = require('./displayMessageOptionsPopup');
 const { createUserOptionsBox } = require('./displayUserOptionsBox');
 
@@ -83,41 +84,34 @@ function scrollToBottom() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+function focusChatBox() {
+  const chat = document.getElementById('chat-textarea');
+  chat.focus();
+}
+
 // Load and display general messages on chat window
 async function loadGeneralChat() {
   clearChat();
+  focusChatBox();
 
-  // Focus chatBox on first load
-  const chat = document.getElementById('chat-textarea');
-  chat.focus();
+  const messages = await getAllGeneralChatMessages();
 
-  // Fetch all general chat messages from server
-  try {
-    const res = await fetch('http://localhost:3000/chat-rooms/general');
-    if (!res.ok) throw new Error(`Failed to fetch general messages from API. Status: ${res.status}`);
+  // Create message-card for each message and display them on chat window
+  for (let i = 0; i < messages.length; i++) {
+    const { text, author, guestName, id } = messages[i];
 
-    const data = await res.json();
+    const messageAuthor = guestName ? guestName : author.email;
+    const profile = author ? author.profile : null;
+    const authorId = author ? author.id : null;
 
-    // Create message-card for each message and display them on chat window
-    for (let i = 0; i < data.messages.length; i++) {
-      const { text, author, guestName, id } = data.messages[i];
-
-      const messageAuthor = guestName ? guestName : author.email;
-      const profile = author ? author.profile : null;
-      const authorId = author ? author.id : null;
-
-      createChatMessage(messageAuthor, text, id, profile, authorId);
-    }
-
-    scrollToBottom();
-
-    // Attach correct listener to chat form submit
-    chatForm.addEventListener('submit', generalChatListener);
-    chatFormListener = generalChatListener;
-
-  } catch (err) {
-    console.error('Failed to load general messages', err);
+    createChatMessage(messageAuthor, text, id, profile, authorId);
   }
+
+  scrollToBottom();
+
+  // Attach correct listener to chat form submit
+  chatForm.addEventListener('submit', generalChatListener);
+  chatFormListener = generalChatListener;
 };
 
 // Loads general chat on first load
@@ -125,46 +119,28 @@ loadGeneralChat();
 
 async function loadChatWithId(chatId) {
   clearChat();
+  focusChatBox();
 
-  // Focus chatBox on first load
-  const chat = document.getElementById('chat-textarea');
-  chat.focus();
+  // Fetch all messages from chat with id: ${chatId}
+  const messages = await getAllMessagesFromChatWithId(chatId);
 
-  // Fetch all messages from chat with id: ${id}
-  try {
-    const token = localStorage.getItem('token');
+  // Create message-card for each message and display them on chat window
+  for (let i = 0; i < messages.length; i++) {
+    const { text, author, id } = messages[i];
 
-    const res = await fetch(`http://localhost:3000/chat-rooms/${chatId}`, {
-      method: 'GET',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': token, 
-      }
-    });
+    const messageAuthor = author.email;
+    const profile = author.profile;
+    const authorId = author.id;
 
-    const data = await res.json();
-
-    // Create message-card for each message and display them on chat window
-    for (let i = 0; i < data.messages.length; i++) {
-      const { text, author, id } = data.messages[i];
-
-      const messageAuthor = author.email;
-      const profile = author.profile;
-      const authorId = author.id;
-
-      createChatMessage(messageAuthor, text, id, profile, authorId);
-    }
-
-    scrollToBottom();
-
-    // Attach correct listener to chat form submit
-    const listener = (e) => chatListener(e, chatId);
-    chatForm.addEventListener('submit', listener);
-    chatFormListener = listener;
-
-  } catch (err) {
-    console.error(`Failed to load messages from chat with id: ${chatId}`, err);
+    createChatMessage(messageAuthor, text, id, profile, authorId);
   }
+
+  scrollToBottom();
+
+  // Attach correct listener to chat form submit
+  const listener = (e) => chatListener(e, chatId);
+  chatForm.addEventListener('submit', listener);
+  chatFormListener = listener;
 }
 
 async function generalChatListener(e) {
@@ -176,28 +152,16 @@ async function generalChatListener(e) {
   const id = user?.id;
   const guestName = localStorage.getItem('guest') || null;
 
-  try {
-    const res = await fetch('http://localhost:3000/chat-rooms/general', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, text, guestName }),
-    });
-    if (!res.ok) throw new Error(`Failed to POST message, Status: ${res.status}`);
-  
-    const data = await res.json();
+  const postedMessage = await postToGeneralChat(id, text, guestName);
 
-    const author = user ? user.email : guestName;
-    const authorId = user ? user.id : null;
-    const messageId = data.newMessage.id;
-    const profile = user ? user.profile : null;
+  const author = user ? user.email : guestName;
+  const authorId = user ? user.id : null;
+  const messageId = postedMessage.id;
+  const profile = user ? user.profile : null;
 
-    createChatMessage(author, text, messageId, profile, authorId);
-    scrollToBottom();
+  createChatMessage(author, text, messageId, profile, authorId);
+  scrollToBottom();
     
-  } catch (err) {
-    console.error('Failed to POST message', err);
-  }
-
   chatForm.reset();
 }
 
@@ -208,33 +172,16 @@ async function chatListener(e, chatId) {
   if (text.length < 1) return;
 
   const user = JSON.parse(localStorage.getItem('user'));
-  const token = localStorage.getItem('token');
 
-  try {
-    const res = await fetch(`http://localhost:3000/chat-rooms/${chatId}`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      },
-      body: JSON.stringify({ 
-        text,
-      }),
-    });
+  const postedMessage = await postToChatWithId(chatId, text);
 
-    const data = await res.json();
+  const author = user.email;
+  const authorId = user.id;
+  const messageId = postedMessage.id;
+  const profile = user.profile;
 
-    const author = user.email;
-    const authorId = user.id;
-    const messageId = data.newMessage.id;
-    const profile = user.profile;
-
-    createChatMessage(author, text, messageId, profile, authorId);
-    scrollToBottom();
-
-  } catch (err) {
-    console.error('Failed to POST message', err);
-  }
+  createChatMessage(author, text, messageId, profile, authorId);
+  scrollToBottom();
 
   chatForm.reset();
 }
