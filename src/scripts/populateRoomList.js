@@ -19,11 +19,18 @@ async function clickRoomListener(e, room) {
   }
 }
 
+function findRoomName(room) {
+  const members = room.members.map((m) => m.email);
+  const [other] = members.filter((m) => m != user.email);
+
+  return other.split('@')[0];
+}
+
 function createRoomCard(room) {
   const card = document.createElement('div');
   card.classList.add('room-card');
   card.setAttribute('data-id', room.id);
-  card.innerText = room.name ? room.name : room.id;
+  card.innerText = room.name ? room.name : findRoomName(room);
   card.addEventListener('click', (e) => clickRoomListener(e, room));
 
   return card;
