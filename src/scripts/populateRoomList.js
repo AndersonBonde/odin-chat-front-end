@@ -1,4 +1,4 @@
-const { fetchChatRooms } = require('./utils');
+const { getChatRooms } = require('./api');
 
 const roomList = document.querySelector('#room-list');
 const user = JSON.parse(localStorage.getItem('user'));
@@ -45,7 +45,7 @@ async function populateChatRoomList() {
   h3.innerText = 'Rooms';
   roomList.append(h3);
 
-  const rooms = await fetchChatRooms();
+  const rooms = await getChatRooms();
 
   rooms.forEach((room) => {
     const card = createRoomCard(room);

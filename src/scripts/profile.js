@@ -1,4 +1,4 @@
-const { syncUser } = require('./utils');
+const { patchUserProfileWithId, syncUser } = require('./api');
 
 const profileForm = document.querySelector('#profile-form');
 const nameInput = document.querySelector('#profile-name');
@@ -35,25 +35,9 @@ profileForm.addEventListener('submit', async (e) => {
     return;
   }
 
-  try {
-    await fetch(`http://localhost:3000/users/profile/${id}`, {
-      method: 'PATCH',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      },
-      body: JSON.stringify({ 
-        profileName,
-        displayColor 
-      }),
-    });
-    
-    await syncUser();
-    loadProfile();
-    
-  } catch (err) {
-    console.error(`Failed to PATCH profile`, err);
-  }
+  await patchUserProfileWithId(id, profileName, displayColor);
+  await syncUser();
+  loadProfile();
 });
 
 function clickEdit() {

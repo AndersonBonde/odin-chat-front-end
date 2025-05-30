@@ -1,4 +1,5 @@
-const { syncUser, setTokenExpiration } = require('./utils');
+const { syncUser, postLogin } = require('./api');
+const { setTokenExpiration } = require('./utils');
 
 const loginForm = document.getElementById('login-form');
 
@@ -8,38 +9,27 @@ loginForm.addEventListener('submit', async (e) => {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  try {
-    const res = await fetch('http://localhost:3000/users/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-  
-    const data = await res.json();
+  const { success, data } = await postLogin(email, password);
 
-    if (!res.ok) {
-      const errorsP = document.querySelector('.errors');
-      if (errorsP) {
-        errorsP.innerHTML = '';
+  if (!success) {
+    const errorsP = document.querySelector('.errors');
+    if (errorsP) {
+      errorsP.innerHTML = '';
 
-        const text = document.createTextNode(data.message);
-        errorsP.appendChild(text);
+      const text = document.createTextNode(data?.message || `An unknown error occurred.`);
+      errorsP.appendChild(text);
 
-        errorsP.style.color = 'tomato';
-      }
-      
-      throw new Error(`HTTP error: Status: ${res.status}`);
+      errorsP.style.color = 'tomato';
     }
-
-    localStorage.setItem('token', data.token);
-    setTokenExpiration(parseInt(data.expiresIn));
-    await syncUser();
-
-    loginForm.reset();
-
-    window.location.href = './index.html';
-
-  } catch (err) {
-    console.error('Error logging in', err);
+    
+    return;
   }
+
+  localStorage.setItem('token', data.token);
+  setTokenExpiration(parseInt(data.expiresIn));
+  await syncUser();
+
+  loginForm.reset();
+
+  window.location.href = './index.html';
 });
