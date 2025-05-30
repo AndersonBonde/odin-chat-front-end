@@ -1,3 +1,5 @@
+const { editMessageWithId } = require('./api');
+
 let activeEditForm = null;
 let activeMessageContainer = null;
 
@@ -84,23 +86,11 @@ function editMessageTextEventListener(e, container) {
 async function SubmitEventListener(e, id, text) {
   e.preventDefault();
 
-  try {
-    const token = localStorage.getItem('token');
+  const { success } = await editMessageWithId(id, text);
 
-    await fetch(`http://localhost:3000/messages/${id}`, {
-      method: 'PATCH',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      },
-      body: JSON.stringify({ text }),
-    });
-    
+  if (success) {
     updateOldMessage(text);
     removeEditForm();
-
-  } catch (err) {
-    console.error('Failed to PATCH message');
   }
 }
 

@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:3000';
 
+// TODO Modify catch blocks to return success: false
+
 async function getGuestNameFromIP() {
   try {
     const res = await fetch(`${BASE_URL}/connect`);
@@ -203,6 +205,109 @@ async function postRegister(email, password, password_confirm) {
   }
 }
 
+async function deleteMessageWithId(id) {
+  const token = localStorage.getItem('token');
+
+  try {
+    const res = await fetch(`${BASE_URL}/messages/${id}`, {
+      method: 'DELETE',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      }
+    });
+
+    return { success: res.ok };
+
+  } catch (err) {
+    console.error(`Failed to DELETE message with id: ${id}`);
+    return { success: false };
+  }
+}
+
+async function createNewChatRoom(memberIds) {
+  const token = localStorage.getItem('token');
+
+  try {
+    const res = await fetch(`${BASE_URL}/chat-rooms`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      },
+      body: JSON.stringify({ memberIds }),
+    }); 
+    const data = await res.json();
+
+    return { success: res.ok, data };
+    
+  } catch (err) {
+    console.error(`Failed to create a new chat room`);
+    return { success: false };
+  }
+}
+
+async function followUserWithId(id) {
+  const token = localStorage.getItem('token');
+
+  try {
+    const res = await fetch(`${BASE_URL}/users/following/${id}`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      },
+    }); 
+
+    return { success: res.ok };
+
+  } catch (err) {
+    console.error(`Failed to follow user`, err);
+    return { success: false };
+  }
+}
+
+async function unfollowUserWithId(id) {
+  const token = localStorage.getItem('token');
+  
+  try {
+    const res = await fetch(`${BASE_URL}/users/following/${id}`, {
+    method: 'DELETE',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': token,
+      },
+    }); 
+
+    return { success: res.ok };
+
+  } catch (err) {
+    console.error(`Failed to unfollow user`, err);
+    return { success: false };
+  }
+}
+
+async function editMessageWithId(id, text) {
+  const token = localStorage.getItem('token');
+  
+  try {
+    const res = await fetch(`${BASE_URL}/messages/${id}`, {
+      method: 'PATCH',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': token,
+      },
+      body: JSON.stringify({ text }),
+    });
+
+    return { success: res.ok };
+
+  } catch (err) {
+    console.error('Failed to PATCH message');
+    return { success: false };
+  }
+}
+
 module.exports = {
   getGuestNameFromIP,
   getAllGeneralChatMessages,
@@ -215,5 +320,10 @@ module.exports = {
   getChatRooms,
   postLogin,
   postRegister,
-  
+  deleteMessageWithId,
+  createNewChatRoom,
+  followUserWithId,
+  unfollowUserWithId,
+  editMessageWithId,
+
 }

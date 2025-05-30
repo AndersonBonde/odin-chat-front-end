@@ -1,9 +1,8 @@
+const { syncUser, getChatRooms, createNewChatRoom, followUserWithId, unfollowUserWithId } = require('./api');
 const { openUserProfile } = require('./profile');
-const { syncUser, fetchChatRooms } = require('./utils');
 const { populateFollowingList } = require('./populateFollowList');
 const { populateChatRoomList } = require('./populateRoomList');
 
-const token = localStorage.getItem('token');
 let activeBox = null;
 
 function handleEscapeKey(e) {
@@ -32,7 +31,7 @@ function deleteUserOptionsBox() {
 }
 
 async function chatAlreadyExists(authorId, userId) {
-  const myRooms = await fetchChatRooms();
+  const myRooms = await getChatRooms();
 
   for (let i = 0; i < myRooms.length; i++) {
     const room = myRooms[i];
@@ -46,8 +45,6 @@ async function chatAlreadyExists(authorId, userId) {
   
   return false;
 }
-
-
 
 function createNewChatButton(authorId, user) {
   const button = document.createElement('button');
@@ -65,28 +62,15 @@ function createNewChatButton(authorId, user) {
     const room = await chatAlreadyExists(authorId, user.id);
     
     if (!room) {
-      const token = localStorage.getItem('token');
       const memberIds = [user.id, authorId];
 
-      try {
-        const res = await fetch(`http://localhost:3000/chat-rooms`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': token,
-          },
-          body: JSON.stringify({ memberIds }),
-        }); 
+      const { success, data } = await createNewChatRoom(memberIds);
 
-        const data = await res.json();
-        console.log(data.message, data.chatRoom);
-
+      if (success) {
         populateChatRoomList();
         loadChatWithId(data.chatRoom.id);
-
-      } catch (err) {
-        console.error(`Failed to create a new chat room`)
       }
+
     } else {
       loadChatWithId(room.id);
     }
@@ -107,21 +91,12 @@ async function followUser(e, authorId) {
 
   deleteUserOptionsBox();
 
-  try {
-    await fetch(`http://localhost:3000/users/following/${authorId}`, {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': token,
-      },
-    }); 
-    
-  } catch (err) {
-    console.error(`Failed to follow user`, err);
-  }
+  const { success } = await followUserWithId(authorId);
 
-  await syncUser();
-  populateFollowingList();
+  if (success) {
+    await syncUser();
+    populateFollowingList();
+  }
 }
 
 async function unfollowUser(e, authorId) {
@@ -130,21 +105,12 @@ async function unfollowUser(e, authorId) {
 
   deleteUserOptionsBox();
 
-  try {
-    await fetch(`http://localhost:3000/users/following/${authorId}`, {
-    method: 'DELETE',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': token,
-      },
-    }); 
+  const { success } = await unfollowUserWithId(authorId);
 
-  } catch (err) {
-    console.error(`Failed to unfollow user`, err);
+  if (success) {
+    await syncUser();
+    populateFollowingList();
   }
-
-  await syncUser();
-  populateFollowingList();
 }
 
 function createFollowUserButton(authorId, user) {
