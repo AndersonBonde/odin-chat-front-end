@@ -94,7 +94,7 @@ async function loadGeneralChat() {
   clearChat();
   focusChatBox();
 
-  const messages = await getAllGeneralChatMessages();
+  const { messages } = await getAllGeneralChatMessages();
 
   // Create message-card for each message and display them on chat window
   for (let i = 0; i < messages.length; i++) {
@@ -122,7 +122,7 @@ async function loadChatWithId(chatId) {
   focusChatBox();
 
   // Fetch all messages from chat with id: ${chatId}
-  const messages = await getAllMessagesFromChatWithId(chatId);
+  const { messages } = await getAllMessagesFromChatWithId(chatId);
 
   // Create message-card for each message and display them on chat window
   for (let i = 0; i < messages.length; i++) {
@@ -152,17 +152,21 @@ async function generalChatListener(e) {
   const id = user?.id;
   const guestName = localStorage.getItem('guest') || null;
 
-  const postedMessage = await postToGeneralChat(id, text, guestName);
+  const { success, message } = await postToGeneralChat(id, text, guestName);
 
-  const author = user ? user.email : guestName;
-  const authorId = user ? user.id : null;
-  const messageId = postedMessage.id;
-  const profile = user ? user.profile : null;
+  if (success) {
+    const author = user ? user.email : guestName;
+    const authorId = user ? user.id : null;
+    const messageId = message.id;
+    const profile = user ? user.profile : null;
+  
+    createChatMessage(author, text, messageId, profile, authorId);
+    scrollToBottom();
 
-  createChatMessage(author, text, messageId, profile, authorId);
-  scrollToBottom();
-    
-  chatForm.reset();
+    chatForm.reset();
+  } else {
+    console.warn('Failed to post message');
+  }
 }
 
 async function chatListener(e, chatId) {
@@ -173,17 +177,21 @@ async function chatListener(e, chatId) {
 
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const postedMessage = await postToChatWithId(chatId, text);
+  const { success, message } = await postToChatWithId(chatId, text);
 
-  const author = user.email;
-  const authorId = user.id;
-  const messageId = postedMessage.id;
-  const profile = user.profile;
-
-  createChatMessage(author, text, messageId, profile, authorId);
-  scrollToBottom();
-
-  chatForm.reset();
+  if (success) {
+    const author = user.email;
+    const authorId = user.id;
+    const messageId = message.id;
+    const profile = user.profile;
+  
+    createChatMessage(author, text, messageId, profile, authorId);
+    scrollToBottom();
+  
+    chatForm.reset();
+  } else {
+    console.warn('Failed to post message');
+  }
 }
 
 function clearChat() {

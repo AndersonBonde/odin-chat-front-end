@@ -10,7 +10,7 @@ function hideSpinner() {
 }
 
 async function getGuestName() {
-  const name = await getGuestNameFromIP();
+  const { name } = await getGuestNameFromIP();
   hideSpinner();
 
   return name;

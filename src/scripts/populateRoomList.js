@@ -37,7 +37,9 @@ function createRoomCard(room) {
 }
 
 async function populateChatRoomList() {
-  if (!user) return;
+  const token = localStorage.getItem('token');
+
+  if (!user || !token) return;
 
   clearRoomList();
 
@@ -45,12 +47,14 @@ async function populateChatRoomList() {
   h3.innerText = 'Rooms';
   roomList.append(h3);
 
-  const rooms = await getChatRooms();
+  const { success, rooms } = await getChatRooms();
 
-  rooms.forEach((room) => {
-    const card = createRoomCard(room);
-    roomList.append(card);
-  });
+  if (success) {
+    rooms.forEach((room) => {
+      const card = createRoomCard(room);
+      roomList.append(card);
+    });
+  }
 }
 populateChatRoomList();
 

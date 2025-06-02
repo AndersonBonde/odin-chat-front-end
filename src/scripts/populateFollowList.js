@@ -20,10 +20,10 @@ async function populateFollowingList() {
   title.innerText = 'You follow';
   followListDiv.appendChild(title);
 
-  const following = await getFollowingList();
+  const { success, list } = await getFollowingList();
 
-  if (following) {
-    following.forEach((user) => {
+  if (success) {
+    list.forEach((user) => {
       const card = createFollowCard(user);
       followListDiv.appendChild(card);
     })

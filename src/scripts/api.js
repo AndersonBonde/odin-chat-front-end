@@ -1,16 +1,15 @@
 const BASE_URL = 'http://localhost:3000';
 
-// TODO Modify catch blocks to return success: false
-
 async function getGuestNameFromIP() {
   try {
     const res = await fetch(`${BASE_URL}/connect`);
     const data = await res.json();
 
-    return data.guestName;
+    return { success: res.ok, name: data.guestName };
 
   } catch (err) {
     console.error('Failed to fetch guest name from API', err);
+    return { success: false, name: 'guest' };
   }
 }
 
@@ -19,10 +18,11 @@ async function getAllGeneralChatMessages() {
     const res = await fetch(`${BASE_URL}/chat-rooms/general`);
     const data = await res.json();
 
-    return data.messages;
+    return { success: res.ok, messages: data.messages };
 
   } catch (err) {
     console.error('Failed to load general messages', err);
+    return { success: false, messages: [{ id: 0, text: 'Network error', guestName: 'Error' }] };
   }
 }
 
@@ -39,10 +39,11 @@ async function getAllMessagesFromChatWithId(id) {
     });
     const data = await res.json();
 
-    return data.messages;
+    return { success: res.ok, messages: data.messages };
 
   } catch (err) {
     console.error(`Failed to load messages from chat with id: ${id}`, err);
+    return { success: false, messages: [{ id: 0, text: 'Network error', author: { id: 0, email: 'Error', profile: null } }] };
   }
 
 }
@@ -56,10 +57,11 @@ async function postToGeneralChat(userId, text, guestName) {
     });
     const data = await res.json();
 
-    return data.newMessage;
+    return { success: res.ok, message: data.newMessage };
 
   } catch (err) {
     console.error('Failed to POST message to general chat', err);
+    return { success: false, message: null };
   }
 }
 
@@ -79,10 +81,11 @@ async function postToChatWithId(id, text) {
     });
     const data = await res.json();
 
-    return data.newMessage;
+    return { success: res.ok, message: data.newMessage };
 
   } catch (err) {
     console.error(`Failed to POST message to chat with id: ${id}`, err);
+    return { success: false, message: null };
   }
 }
 
@@ -90,7 +93,7 @@ async function patchUserProfileWithId(id, name, color) {
   const token = localStorage.getItem('token');
 
   try {
-    await fetch(`${BASE_URL}/users/profile/${id}`, {
+    const res = await fetch(`${BASE_URL}/users/profile/${id}`, {
       method: 'PATCH',
       headers: { 
         'Content-Type': 'application/json',
@@ -102,8 +105,11 @@ async function patchUserProfileWithId(id, name, color) {
       }),
     });
 
+    return { success: res.ok };
+
   } catch (err) {
     console.error(`Failed to PATCH user profile`, err);
+    return { success: false };
   }
 }
 
@@ -123,10 +129,11 @@ async function getFollowingList() {
     });
     const data = await res.json();
 
-    return data;
+    return { success: res.ok, list: data };
 
   } catch (err) {
     console.error('Failed to fetch following list', err);
+    return { success: false, list: null };
   }
 }
 
@@ -144,10 +151,11 @@ async function syncUser() {
     const data = await res.json();
     localStorage.setItem('user', JSON.stringify(data.user));
   
-    return data.user;
+    return { success: res.ok, user: data.user };
 
   } catch (err) {
     console.error(`Failed to syncUser`, err);
+    return { success: false, user: null };
   }
 }
 
@@ -164,10 +172,11 @@ async function getChatRooms() {
     });
     const data = await res.json();
 
-    return data.chatRooms;
+    return { success: res.ok, rooms: data.chatRooms };
 
   } catch (err) {
     console.error('Failed to fetch chat rooms list', err);
+    return { success: false, rooms: null };
   }
 }
 
