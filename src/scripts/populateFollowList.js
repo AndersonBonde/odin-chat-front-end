@@ -15,10 +15,9 @@ function createFollowCard(user) {
 
 async function populateFollowingList() {
   clearFollowingList();
-
-  const title = document.createElement('h3');
-  title.innerText = 'You follow';
-  followListDiv.appendChild(title);
+  
+  const token = localStorage.getItem('token');
+  if (!token) return;
 
   const { success, list } = await getFollowingList();
 
@@ -33,6 +32,10 @@ populateFollowingList();
 
 function clearFollowingList() {
   followListDiv.innerHTML = '';
+
+  const title = document.createElement('h3');
+  title.innerText = 'You follow';
+  followListDiv.appendChild(title);
 }
 
 module.exports = {

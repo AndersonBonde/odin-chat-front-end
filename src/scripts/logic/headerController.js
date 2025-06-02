@@ -1,5 +1,5 @@
 import { getGuestNameFromIP } from "../api";
-import { showSpinner, hideSpinner, showUsername } from "../ui/header";
+import { showSpinner, hideSpinner, showUsername, displayButtonsForUser, displayButtonsForGuest } from "../ui/header";
 
 const token = localStorage.getItem('token');
 
@@ -29,4 +29,17 @@ async function loadUsernameOnStart() {
 
   hideSpinner();
 };
-loadUsernameOnStart();
+
+function loadButtonsOnStart() {
+  if (token) {
+    displayButtonsForUser();
+  } else {
+    displayButtonsForGuest();
+  }
+}
+
+async function start() {
+  await loadUsernameOnStart();
+  loadButtonsOnStart();
+}
+start();

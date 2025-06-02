@@ -1,6 +1,5 @@
 import './style.css';
 import './scripts/logic/headerController';
-import './scripts/loadHeaderButtons';
 import './scripts/loadGeneralChat';
 import './scripts/profile';
 import './scripts/populateFollowList';
