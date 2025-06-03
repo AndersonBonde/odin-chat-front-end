@@ -1,5 +1,17 @@
-import { getGuestNameFromIP } from "../api";
-import { showSpinner, hideSpinner, showUsername, displayButtonsForUser, displayButtonsForGuest } from "../ui/header";
+const { 
+  logoutButton,
+  settingsButton,
+  profileButton,
+  showSpinner, 
+  hideSpinner, 
+  showUsername, 
+  displayButtonsForUser, 
+  displayButtonsForGuest,
+  logoutUser,
+  toggleSettings,
+  openProfile,
+} = require("../ui/header");
+const { getGuestNameFromIP } = require("../api");
 
 const token = localStorage.getItem('token');
 
@@ -30,7 +42,7 @@ async function loadUsernameOnStart() {
   hideSpinner();
 };
 
-function loadButtonsOnStart() {
+function loadHeaderButtonsOnStart() {
   if (token) {
     displayButtonsForUser();
   } else {
@@ -38,8 +50,21 @@ function loadButtonsOnStart() {
   }
 }
 
-async function start() {
-  await loadUsernameOnStart();
-  loadButtonsOnStart();
+function attachHeaderListeners() {
+  logoutButton.addEventListener('click', logoutUser);
+
+  settingsButton.addEventListener('click', toggleSettings);
+
+  profileButton.addEventListener('click', openProfile);
 }
-start();
+
+async function initializeHeader() {
+  await loadUsernameOnStart();
+  loadHeaderButtonsOnStart();
+  attachHeaderListeners();
+}
+
+module.exports = {
+  initializeHeader,
+
+};

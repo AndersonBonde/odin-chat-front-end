@@ -1,4 +1,4 @@
-const { openUserProfile } = require('../profile');
+const { openUserProfile } = require('./profile');
 
 const spinner = document.getElementById('spinner');
 const guestNameDiv = document.getElementById('userName');
@@ -34,13 +34,13 @@ function displayButtonsForGuest() {
   settingsButton.style.display = 'none';
 }
 
-logoutButton.addEventListener('click', (e) => {
+function logoutUser(e) {
   e.preventDefault();
 
   localStorage.clear();
 
   window.location.href = './index.html';
-});
+}
 
 function handleClickOutside(e) {
   if (!dropdown.contains(e.target)) {
@@ -53,7 +53,7 @@ function closeMenuDropdown() {
   document.removeEventListener('click', handleClickOutside);
 }
 
-settingsButton.addEventListener('click', (e) => {
+function toggleSettings(e) {
   e.stopPropagation();
   const isOpen = content.classList.toggle('show');
   
@@ -62,18 +62,25 @@ settingsButton.addEventListener('click', (e) => {
   } else {
     closeMenuDropdown();
   }
-});
+}
 
-profileButton.addEventListener('click', () => {
+function openProfile() {
+  const user = JSON.parse(localStorage.getItem('user'));
   closeMenuDropdown();
-  openUserProfile();
-});
+  openUserProfile(user);
+}
 
 module.exports = {
+  logoutButton,
+  settingsButton,
+  profileButton,
   showSpinner,
   hideSpinner,
   showUsername,
   displayButtonsForUser,
   displayButtonsForGuest,
+  logoutUser,
+  toggleSettings,
+  openProfile,
 
 }

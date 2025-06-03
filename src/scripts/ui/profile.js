@@ -1,17 +1,22 @@
-const { patchUserProfileWithId, syncUser } = require('./api');
-
 const profileForm = document.querySelector('#profile-form');
 const nameInput = document.querySelector('#profile-name');
 const displayColorInput = document.querySelector('#display-color');
 const editButton = document.querySelector('.profile-edit-button');
 const submitButton = document.querySelector('.profile-buttons-container button[type="submit"]');
-const token = localStorage.getItem('token');
+const backButton = document.querySelector('#user-profile-container .back-button');
 
-function loadProfile() {
-  const user = JSON.parse(localStorage.getItem('user'));
+function getProfileFormValues() {
+  return {
+    profileName: nameInput.value,
+    displayColor: displayColorInput.value,
+  };
+}
 
-  nameInput.value = user.profile.name;
-  displayColorInput.value = user.profile.displayColor;
+function renderProfile(user) {
+  const { profile } = user;
+
+  nameInput.value = profile.name;
+  displayColorInput.value = profile.displayColor;
 
   editButton.style.display = 'block';
   submitButton.style.display = 'none';
@@ -20,27 +25,7 @@ function loadProfile() {
   displayColorInput.setAttribute('disabled', true);
 }
 
-profileForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const user = JSON.parse(localStorage.getItem('user'));
-
-  const { id } = user; 
-  const profileName = nameInput.value;
-  const displayColor = displayColorInput.value;
-
-  // If user didn't change any value, return;
-  if (profileName == user.profile.name && displayColor == user.profile.displayColor) {
-    loadProfile();
-    return;
-  }
-
-  await patchUserProfileWithId(id, profileName, displayColor);
-  await syncUser();
-  loadProfile();
-});
-
-function clickEdit() {
+function enableEditMode() {
   editButton.style.display = 'none';
   submitButton.style.display = 'block';
 
@@ -49,14 +34,13 @@ function clickEdit() {
 
   nameInput.focus();
 }
-editButton.addEventListener('click', clickEdit);
 
-function openUserProfile() {
+function openUserProfile(user) {
   document.querySelector('#chat').style.display = 'none';
   document.querySelector('aside').style.display = 'none';
   document.querySelector('#user-profile-container').style.display = 'block';
 
-  loadProfile();
+  renderProfile(user);
 }
 
 function leaveUserProfile() {
@@ -67,8 +51,14 @@ function leaveUserProfile() {
   // Reload the page to reflect any changes the user made in their profile
   window.location.href = './index.html';
 }
-document.querySelector('#user-profile-container .back-button').addEventListener('click', leaveUserProfile);
 
 module.exports = {
+  profileForm,
+  editButton,
+  backButton,
+  getProfileFormValues,
+  renderProfile,
+  enableEditMode,
   openUserProfile,
-}
+  leaveUserProfile,
+};
