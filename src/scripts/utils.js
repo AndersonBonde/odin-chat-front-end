@@ -7,7 +7,7 @@ function setTokenExpiration(days) {
 function checkIfTokenIsExpired() {
   const expiration = localStorage.getItem('expiration');
 
-  return Date.now() > expiration;
+  if (Date.now() > expiration) localStorage.clear();
 }
 
 module.exports = {

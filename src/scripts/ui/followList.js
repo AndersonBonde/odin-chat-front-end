@@ -1,5 +1,3 @@
-const { getFollowingList } = require('./api');
-
 const followListDiv = document.querySelector('#follow-list');
 
 function createFollowCard(user) {
@@ -9,26 +7,10 @@ function createFollowCard(user) {
   const text = document.createTextNode(user.email);
 
   card.appendChild(text);
+  followListDiv.append(card);
 
   return card;
 }
-
-async function populateFollowingList() {
-  clearFollowingList();
-  
-  const token = localStorage.getItem('token');
-  if (!token) return;
-
-  const { success, list } = await getFollowingList();
-
-  if (success) {
-    list.forEach((user) => {
-      const card = createFollowCard(user);
-      followListDiv.appendChild(card);
-    })
-  }
-};
-populateFollowingList();
 
 function clearFollowingList() {
   followListDiv.innerHTML = '';
@@ -39,5 +21,6 @@ function clearFollowingList() {
 }
 
 module.exports = {
-  populateFollowingList,
+  createFollowCard,
+  clearFollowingList,
 }

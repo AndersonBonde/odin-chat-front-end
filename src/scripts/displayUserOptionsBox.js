@@ -1,7 +1,7 @@
 const { syncUser, getChatRooms, createNewChatRoom, followUserWithId, unfollowUserWithId } = require('./api');
 const { openUserProfile } = require('./ui/profile');
-const { populateFollowingList } = require('./populateFollowList');
-const { populateChatRoomList } = require('./populateRoomList');
+const { populateFollowingList } = require('./logic/asideController');
+const { populateChatRoomList } = require('./logic/asideController');
 
 let activeBox = null;
 
