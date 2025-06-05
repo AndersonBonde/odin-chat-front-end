@@ -135,6 +135,8 @@ function createFollowUserButton(authorId, user) {
 }
 
 function createOpenOwnProfileButton() {
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Profile');
@@ -145,7 +147,7 @@ function createOpenOwnProfileButton() {
     e.preventDefault();
     e.stopPropagation();
 
-    openUserProfile();
+    openUserProfile(user);
 
     deleteUserOptionsBox();
   });
