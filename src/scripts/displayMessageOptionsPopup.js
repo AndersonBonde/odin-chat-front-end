@@ -1,6 +1,4 @@
-const { editMessageTextEventListener } = require('./editMessage');
-const { deleteMessageEventListener } = require('./deleteMessage');
-const { handleDeleteMessage, handleEditMessage } = require('./logic/chatController');
+const { handleClickDeleteButton, handleClickEditButton } = require('./logic/chatController');
 
 let activeBox = null;
 
@@ -52,7 +50,7 @@ function createEditButton(messageId) {
     const messageContainer = document.querySelector(`.message-text[data-id="${messageId}"]`);
 
     deleteMessageOptionsBox();
-    handleEditMessage(e, messageContainer);
+    handleClickEditButton(e, messageContainer);
   }
 
   button.addEventListener('click', editButtonListener);
@@ -72,7 +70,7 @@ function createDeleteButton(messageId) {
     e.stopPropagation();
 
     deleteMessageOptionsBox();
-    deleteMessageEventListener(e, messageId);
+    handleClickDeleteButton(e, messageId);
   }
 
   button.addEventListener('click', deleteButtonListener);

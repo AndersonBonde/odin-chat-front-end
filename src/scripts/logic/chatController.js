@@ -1,5 +1,5 @@
 const { 
-  deleteMessage 
+  deleteMessageFromDOM 
 } = require('../ui/chat');
 const {
   createEditForm,
@@ -13,7 +13,7 @@ const {
   editMessageWithId,
 } = require('../api');
 
-async function handleDeleteMessage(e, id) {
+async function handleClickDeleteButton(e, id) {
   e.preventDefault();
 
   const confirmed = window.confirm('Are you sure you want to delete this message?');
@@ -22,12 +22,12 @@ async function handleDeleteMessage(e, id) {
     const { success } = await deleteMessageWithId(id);
 
     if (success) {
-      deleteMessage(id);
+      deleteMessageFromDOM(id);
     }
   }
 }
 
-async function handleEditMessage(e, container) {
+async function handleClickEditButton(e, container) {
   e.preventDefault();
 
   const id = container.dataset.id;
@@ -50,7 +50,7 @@ async function handleEditMessage(e, container) {
 }
 
 module.exports = {
-  handleDeleteMessage,
-  handleEditMessage,
+  handleClickDeleteButton,
+  handleClickEditButton,
 
 }
