@@ -1,29 +1,28 @@
-const { syncUser, getChatRooms, createNewChatRoom, followUserWithId, unfollowUserWithId } = require('./api');
-const { openUserProfile } = require('./ui/profile');
-const { populateFollowingList } = require('./logic/asideController');
-const { populateChatRoomList } = require('./logic/asideController');
+const { syncUser, getChatRooms, createNewChatRoom, followUserWithId, unfollowUserWithId } = require('../api');
+const { openUserProfile } = require('./profile');
+const { populateFollowingList, populateChatRoomList } = require('../logic/asideController');
 
-let activeBox = null;
+let activeUserActionMenu = null;
 
 function handleEscapeKey(e) {
   if (e.key === 'Escape') {
-    deleteUserOptionsBox();
+    deleteUserActionMenu();
   }
 }
 
 function handleClickOutside(e) {
   if (
-    activeBox &&
-    !activeBox.parentElement.contains(e.target)
+    activeUserActionMenu &&
+    !activeUserActionMenu.parentElement.contains(e.target)
   ) {
-    deleteUserOptionsBox();
+    deleteUserActionMenu();
   }
 }
 
-function deleteUserOptionsBox() {
-  if (activeBox) {
-    activeBox.remove();
-    activeBox = null;
+function deleteUserActionMenu() {
+  if (activeUserActionMenu) {
+    activeUserActionMenu.remove();
+    activeUserActionMenu = null;
   }
 
   document.removeEventListener('keydown', handleEscapeKey);
@@ -31,10 +30,10 @@ function deleteUserOptionsBox() {
 }
 
 async function chatAlreadyExists(authorId, userId) {
-  const myRooms = await getChatRooms();
+  const { rooms } = await getChatRooms();
 
-  for (let i = 0; i < myRooms.length; i++) {
-    const room = myRooms[i];
+  for (let i = 0; i < rooms.length; i++) {
+    const room = rooms[i];
     const memberIds = room.members.map((m) => m.id);
 
     if (
@@ -57,7 +56,9 @@ function createNewChatButton(authorId, user) {
     e.preventDefault();
     e.stopPropagation();
 
-    const { loadChatWithId } = require('./loadGeneralChat');
+    deleteUserActionMenu();
+
+    const { loadChatWithId } = require('../loadGeneralChat');
     
     const room = await chatAlreadyExists(authorId, user.id);
     
@@ -74,22 +75,18 @@ function createNewChatButton(authorId, user) {
     } else {
       loadChatWithId(room.id);
     }
-
-    deleteUserOptionsBox();
   });
-
+  
   return button;
 }
 
-function followingThisUser(authorId, user) {
+function isFollowingThisUser(authorId, user) {
   return user.following.some((f) => f.id == authorId);
 }
 
-async function followUser(e, authorId) {
+async function handleClickFollowButton(e, authorId) {
   e.preventDefault();
   e.stopPropagation();
-
-  deleteUserOptionsBox();
 
   const { success } = await followUserWithId(authorId);
 
@@ -99,11 +96,9 @@ async function followUser(e, authorId) {
   }
 }
 
-async function unfollowUser(e, authorId) {
+async function handleClickUnfollowButton(e, authorId) {
   e.preventDefault();
   e.stopPropagation();
-
-  deleteUserOptionsBox();
 
   const { success } = await unfollowUserWithId(authorId);
 
@@ -118,25 +113,28 @@ function createFollowUserButton(authorId, user) {
   button.setAttribute('type', 'button');
   button.classList.add('options-button');
 
-  // Check if is already following
-  if (followingThisUser(authorId, user)) {
+  if (isFollowingThisUser(authorId, user)) {
     button.setAttribute('title', 'Unfollow');
     button.innerText = '➖👤';
 
-    button.addEventListener('click', (e) => unfollowUser(e, authorId));
+    button.addEventListener('click', (e) => {
+      deleteUserActionMenu();
+      handleClickUnfollowButton(e, authorId);
+    });
   } else {
     button.setAttribute('title', 'Follow');
     button.innerText = '➕👤';
 
-    button.addEventListener('click', (e) => followUser(e, authorId));
+    button.addEventListener('click', (e) => {
+      deleteUserActionMenu();
+      handleClickFollowButton(e, authorId);
+    });
   }
 
   return button;
 }
 
-function createOpenOwnProfileButton() {
-  const user = JSON.parse(localStorage.getItem('user'));
-
+function createOpenOwnProfileButton(user) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Profile');
@@ -147,16 +145,15 @@ function createOpenOwnProfileButton() {
     e.preventDefault();
     e.stopPropagation();
 
+    deleteUserActionMenu();
     openUserProfile(user);
-
-    deleteUserOptionsBox();
   });
 
   return button;
 }
 
-function createUserOptionsBox(authorId) {
-  deleteUserOptionsBox();
+function createUserActionMenu(authorId) {
+  deleteUserActionMenu();
 
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -165,18 +162,15 @@ function createUserOptionsBox(authorId) {
 
   // Buttons for clicking own user
   if (user.id == authorId) {
-    const profileButton = createOpenOwnProfileButton();
+    const profileButton = createOpenOwnProfileButton(user);
     container.append(profileButton);
-  }
-
-  // Buttons for clicking other users
-  if (user.id != authorId) {
+  } else { // Clicking other users
     const newChatButton = createNewChatButton(authorId, user);
     const followUser = createFollowUserButton(authorId, user);
     container.append(newChatButton, followUser);
   }
 
-  activeBox = container;
+  activeUserActionMenu = container;
 
   // Listeners to close on esc and clicking outside the box
   document.addEventListener('keydown', handleEscapeKey);
@@ -186,5 +180,5 @@ function createUserOptionsBox(authorId) {
 }
 
 module.exports = {
-  createUserOptionsBox,
-}
+  createUserActionMenu,
+};

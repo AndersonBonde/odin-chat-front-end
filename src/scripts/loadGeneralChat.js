@@ -1,5 +1,5 @@
 const { getAllGeneralChatMessages, getAllMessagesFromChatWithId, postToGeneralChat, postToChatWithId } = require('./api');
-const { createUserOptionsBox } = require('./displayUserOptionsBox');
+const { createUserActionMenu } = require('./ui/userActionMenu');
 const { createMessageActionMenu } = require('./ui/messageActionMenu');
 
 const chatForm = document.getElementById('chat-typing-box');
@@ -30,7 +30,6 @@ function createChatMessage(author, message, messageId, profile, authorId) {
     messageText.classList.add('hover-is-pointer');
 
     messageText.addEventListener('click', (e) => {
-      // const messageOptionsBox = createMessageOptionsBox(messageId);
       const messageOptionsBox = createMessageActionMenu(messageId);
       messageText.appendChild(messageOptionsBox);
     });
@@ -69,7 +68,7 @@ function createChatMessage(author, message, messageId, profile, authorId) {
       messageAuthor.setAttribute('data-authorId', authorId);
 
       messageAuthor.addEventListener('click', (e) => {
-        const userOptionsBox = createUserOptionsBox(authorId);
+        const userOptionsBox = createUserActionMenu(authorId);
         messageAuthor.appendChild(userOptionsBox);
       })
     }
