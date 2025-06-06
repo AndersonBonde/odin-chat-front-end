@@ -28,7 +28,7 @@ function createRoomCard(room, user) {
 async function clickRoomListener(e, room) {
   e.preventDefault();
 
-  const { loadChatWithId, loadGeneralChat } = require('../loadGeneralChat');
+  const { loadChatWithId, loadGeneralChat } = require('../logic/chatController');
 
   if (room.name == 'General Chat') {
     await loadGeneralChat();

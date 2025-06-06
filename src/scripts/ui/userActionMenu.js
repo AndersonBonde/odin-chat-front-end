@@ -1,6 +1,15 @@
-const { syncUser, getChatRooms, createNewChatRoom, followUserWithId, unfollowUserWithId } = require('../api');
+const { 
+  syncUser, 
+  getChatRooms, 
+  createNewChatRoom, 
+  followUserWithId, 
+  unfollowUserWithId 
+} = require('../api');
+const { 
+  populateFollowingList, 
+  populateChatRoomList 
+} = require('../logic/asideController');
 const { openUserProfile } = require('./profile');
-const { populateFollowingList, populateChatRoomList } = require('../logic/asideController');
 
 let activeUserActionMenu = null;
 
@@ -58,7 +67,7 @@ function createNewChatButton(authorId, user) {
 
     deleteUserActionMenu();
 
-    const { loadChatWithId } = require('../loadGeneralChat');
+    const { loadChatWithId } = require('../logic/chatController');
     
     const room = await chatAlreadyExists(authorId, user.id);
     
