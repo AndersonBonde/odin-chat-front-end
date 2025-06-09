@@ -2,7 +2,6 @@ const { openUserProfile } = require('./profile');
 
 const spinner = document.getElementById('spinner');
 const guestNameDiv = document.getElementById('userName');
-const token = localStorage.getItem('token');
 const loginButton = document.querySelector('#login-button');
 const logoutButton = document.getElementById('logout-button');
 const settingsButton = document.querySelector('#dropdown-settings-button');

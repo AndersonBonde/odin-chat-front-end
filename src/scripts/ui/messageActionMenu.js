@@ -91,8 +91,8 @@ function createDeleteButton(messageId) {
   button.innerText = '🗑️';
 
   button.addEventListener('click', (e) => {
-    handleClickDeleteButton(e, messageId);
     closeMessageActionMenu();
+    handleClickDeleteButton(e, messageId);
   });
 
   return button;

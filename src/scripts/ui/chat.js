@@ -116,7 +116,6 @@ function focusChatBox() {
 }
 
 module.exports = {
-  chatWindow,
   chatForm,
   createChatMessage,
   setFormListener,
