@@ -240,10 +240,13 @@ aside {
   border-radius: 0 0 16px 16px;
 }
 
+.follow-card,
 .room-card {
+  position: relative;
   padding: 0px 4px;
 }
 
+.follow-card:hover,
 .room-card:hover {
   color: black;
   background-color: var(--color-background);

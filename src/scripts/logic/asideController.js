@@ -22,7 +22,15 @@ async function populateFollowingList() {
 
   if (success) {
     list.forEach((user) => {
-      createFollowCard(user);
+      const card = createFollowCard(user);
+
+      card.addEventListener('click', () => {
+        const { authorid } = card.dataset;
+        const { createUserActionMenu } = require('../ui/userActionMenu');
+
+        const userActionMenu = createUserActionMenu(authorid);
+        card.append(userActionMenu);
+      })
     })
   }
 };
