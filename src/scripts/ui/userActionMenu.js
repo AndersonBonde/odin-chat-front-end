@@ -54,35 +54,39 @@ async function chatAlreadyExists(authorId, userId) {
   return false;
 }
 
-function createNewChatButton(authorId, user) {
+async function handleClickNewChatButton(authorId, user) {
+  const room = await chatAlreadyExists(authorId, user.id);
+  
+  if (!room) {
+    const memberIds = [user.id, authorId];
+
+    const { success, data } = await createNewChatRoom(memberIds);
+    
+    if (success) {
+      populateChatRoomList();
+      loadChatWithId(data.chatRoom.id);
+    }
+    
+  } else {
+    const { loadChatWithId } = require('../logic/chatController');
+
+    loadChatWithId(room.id);
+  }
+}
+
+function createNewChatButton(authorId, user, listeners = null) {
   const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.setAttribute('title', 'Create chat');
   button.classList.add('options-button');
   button.innerText = '✚';
-
+  
   button.addEventListener('click', async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    deleteUserActionMenu();
-
-    const { loadChatWithId } = require('../logic/chatController');
-    
-    const room = await chatAlreadyExists(authorId, user.id);
-    
-    if (!room) {
-      const memberIds = [user.id, authorId];
-
-      const { success, data } = await createNewChatRoom(memberIds);
-
-      if (success) {
-        populateChatRoomList();
-        loadChatWithId(data.chatRoom.id);
-      }
-
-    } else {
-      loadChatWithId(room.id);
+    if (Array.isArray(listeners)) {
+      listeners.forEach((listener) => listener(authorId, user));
     }
   });
   
@@ -174,7 +178,7 @@ function createUserActionMenu(authorId) {
     const profileButton = createOpenOwnProfileButton(user);
     container.append(profileButton);
   } else { // Clicking other users
-    const newChatButton = createNewChatButton(authorId, user);
+    const newChatButton = createNewChatButton(authorId, user, [deleteUserActionMenu, handleClickNewChatButton]);
     const followUser = createFollowUserButton(authorId, user);
     container.append(newChatButton, followUser);
   }
